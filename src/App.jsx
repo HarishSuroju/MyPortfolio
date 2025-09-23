@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { AuthProvider } from './contexts/AuthContext';
 import Header from './pages/Header.jsx';
 import Hero from './pages/Hero.jsx';
 import About from './pages/About.jsx';
@@ -53,19 +55,31 @@ function App() {
     }, []);
 
     return (
-        <div className="bg-gray-100 text-gray-900 font-inter scroll-smooth">
-            <Header />
-            <main className="pt-20">
-                <Hero />
-                <About />
-                <Skills />
-                <Projects />
-                <Internships />
-                <Certificates />
-                <Contact />
-            </main>
-            <Footer />
-        </div>
+        <AuthProvider>
+            <div className="bg-gray-100 text-gray-900 font-inter scroll-smooth">
+                <Toaster 
+                    position="top-right"
+                    toastOptions={{
+                        duration: 3000,
+                        style: {
+                            background: '#363636',
+                            color: '#fff',
+                        },
+                    }}
+                />
+                <Header />
+                <main className="pt-20">
+                    <Hero />
+                    <About />
+                    <Skills />
+                    <Projects />
+                    <Internships />
+                    <Certificates />
+                    <Contact />
+                </main>
+                <Footer />
+            </div>
+        </AuthProvider>
     );
 }
 
