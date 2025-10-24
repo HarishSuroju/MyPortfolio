@@ -44,7 +44,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
-                            placeholder="harishsurojuv@gmail.com"
+                            placeholder="admin@portfolio.com"
                         />
                     </div>
                     
@@ -60,7 +60,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
-                                placeholder="Harish@2084"
+                                placeholder="admin123"
                             />
                             <button
                                 type="button"
