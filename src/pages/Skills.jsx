@@ -49,6 +49,7 @@ const Skills = () => {
             'Database': 'bg-purple-500',
             'Mobile': 'bg-yellow-500',
             'DevOps': 'bg-red-500',
+            'DSA': 'bg-orange-500',
             'Other': 'bg-gray-500'
         };
         return colors[category] || colors['Other'];
@@ -91,6 +92,7 @@ const Skills = () => {
                                 <option value="Database">Database</option>
                                 <option value="Mobile">Mobile</option>
                                 <option value="DevOps">DevOps</option>
+                                <option value="DSA">DSA</option>
                                 <option value="Other">Other</option>
                             </select>
                             <div className="flex items-center space-x-2">

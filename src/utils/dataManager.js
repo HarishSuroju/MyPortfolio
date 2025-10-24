@@ -3,15 +3,15 @@ const defaultPortfolioData = {
     hero: {
         name: "Harish Suroju",
         title: "A passionate software developer with a love for building cool things.",
-        profileImage: "/src/assets/me.jpg",
-        backgroundImage: "/src/assets/portfolio bg.jpg"
+        profileImage: "/me.jpg",
+        backgroundImage: "/portfolio bg.jpg"
     },
     about: {
         title: "About Me",
         description: "I'm a passionate software developer with experience in modern web technologies. I love creating innovative solutions and learning new technologies.\n\nMy journey in web development began with a curiosity for how things work, and it quickly evolved into a passion for crafting engaging user experiences.\n\nWhen I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or sipping coffee while sketching out new ideas.",
         skills: ["JavaScript", "React", "Node.js", "Python", "Java"],
         experience: "2+ years of development experience",
-        profileImage: "/src/assets/me.jpg"
+        profileImage: "/me.jpg"
     },
     skills: [
         { name: "JavaScript", level: 90, category: "Frontend" },
@@ -26,7 +26,7 @@ const defaultPortfolioData = {
             id: 1,
             title: "E-commerce Platform",
             description: "A full-stack e-commerce solution built with React and Node.js",
-            image: "/api/placeholder/400/300",
+            image: "/placeholder-project.jpg",
             technologies: ["React", "Node.js", "MongoDB"],
             githubUrl: "https://github.com/username/project1",
             liveUrl: "https://project1.com"
@@ -48,7 +48,7 @@ const defaultPortfolioData = {
             title: "DSA in Java by NPTEL",
             issuer: "NPTEL",
             date: "2023",
-            image: "/src/assets/HArish DSA in Java by NPTEL.png",
+            image: "/HArish DSA in Java by NPTEL.png",
             description: "Data Structures and Algorithms certification"
         },
         {
@@ -56,7 +56,7 @@ const defaultPortfolioData = {
             title: "DBMS SQL by ORACLE",
             issuer: "Oracle",
             date: "2023",
-            image: "/src/assets/Harish DBMS SQL by ORACLE.png",
+            image: "/Harish DBMS SQL by ORACLE.png",
             description: "Database Management Systems certification"
         },
         {
@@ -64,7 +64,7 @@ const defaultPortfolioData = {
             title: "Problem Solving through Programming in C",
             issuer: "NPTEL",
             date: "2023",
-            image: "/src/assets/Harish PSP using C by NPTEL.png",
+            image: "/Harish PSP using C by NPTEL.png",
             description: "Programming in C certification"
         },
         {
@@ -72,7 +72,7 @@ const defaultPortfolioData = {
             title: "C++ Programming",
             issuer: "Saylor Academy",
             date: "2023",
-            image: "/src/assets/Saylor C++.png",
+            image: "/Saylor C++.png",
             description: "C++ Programming certification"
         },
         {
@@ -80,7 +80,7 @@ const defaultPortfolioData = {
             title: "Adobe Creative Workshop",
             issuer: "Adobe",
             date: "2023",
-            image: "/src/assets/Adobe Participation img.png",
+            image: "/Adobe Participation img.png",
             description: "Adobe Creative Suite workshop participation"
         },
         {
@@ -88,7 +88,7 @@ const defaultPortfolioData = {
             title: "TCS iON Career Edge",
             issuer: "TCS iON",
             date: "2023",
-            image: "/src/assets/tcsion.png",
+            image: "/tcsion.png",
             description: "Professional development certification"
         }
     ],

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getPortfolioData, updatePortfolioSection } from '../utils/dataManager';
 import EditableContent from '../components/EditableContent';
-import portfolioBg from '../assets/portfolio bg.jpg';
-import profileImg from '../assets/me.jpg';
 
 const Hero = () => {
     const [heroData, setHeroData] = useState(null);
@@ -29,7 +27,7 @@ const Hero = () => {
                 className="absolute inset-0 z-0"
             >
                 <img 
-                    src={heroData.backgroundImage || portfolioBg} 
+                    src={heroData.backgroundImage || "/portfolio bg.jpg"} 
                     alt="Portfolio background" 
                     className="object-cover w-full h-full opacity-50" 
                 />
@@ -44,7 +42,7 @@ const Hero = () => {
                         className="inline-block"
                     >
                         <img 
-                            src={heroData.profileImage || profileImg} 
+                            src={heroData.profileImage || "/me.jpg"} 
                             alt="Profile" 
                             className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mx-auto" 
                         />

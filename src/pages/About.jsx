@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getPortfolioData, updatePortfolioSection } from '../utils/dataManager';
 import EditableContent from '../components/EditableContent';
-import meImage from '../assets/me.jpg';
 
 const About = () => {
     const [aboutData, setAboutData] = useState(null);
@@ -38,7 +37,7 @@ const About = () => {
                             type="image"
                         >
                             <img 
-                                src={aboutData.profileImage || meImage} 
+                                src={aboutData.profileImage || "/me.jpg"} 
                                 alt="Your Photo" 
                                 className="rounded-3xl shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-500" 
                             />
