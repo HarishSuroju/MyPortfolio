@@ -29,7 +29,7 @@ const Hero = () => {
                 <img 
                     src={heroData.backgroundImage || "/portfolio bg.jpg"} 
                     alt="Portfolio background" 
-                    className="object-cover w-full h-full opacity-50" 
+                    className="object-cover w-full h-full opacity-50 transition-all duration-500 hover:opacity-40" 
                 />
             </EditableContent>
             
@@ -44,7 +44,7 @@ const Hero = () => {
                         <img 
                             src={heroData.profileImage || "/me.jpg"} 
                             alt="Profile" 
-                            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mx-auto" 
+                            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mx-auto transition-all duration-300 hover:scale-110 hover:shadow-xl" 
                         />
                     </EditableContent>
                 </div>

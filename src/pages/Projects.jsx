@@ -197,7 +197,7 @@ const Projects = () => {
                 )}
                 
                 {project.image && (
-                    <img src={project.image} alt={project.title} className="w-full h-48 object-cover" />
+                    <img src={project.image} alt={project.title} className="w-full h-48 object-cover transition-all duration-300 hover:scale-110 hover:opacity-90" />
                 )}
                 
                 <div className="p-6">

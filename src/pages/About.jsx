@@ -39,7 +39,7 @@ const About = () => {
                             <img 
                                 src={aboutData.profileImage || "/me.jpg"} 
                                 alt="Your Photo" 
-                                className="rounded-3xl shadow-lg transform rotate-3 hover:rotate-0 transition-transform duration-500" 
+                                className="rounded-3xl shadow-lg transform rotate-3 hover:rotate-0 transition-all duration-500 hover:scale-105" 
                             />
                         </EditableContent>
                     </div>

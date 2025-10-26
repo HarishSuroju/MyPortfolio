@@ -14,32 +14,33 @@ const defaultPortfolioData = {
         profileImage: "/me.jpg"
     },
     skills: [
-        { name: "JavaScript", level: 90, category: "Frontend" },
-        { name: "React", level: 85, category: "Frontend" },
-        { name: "Node.js", level: 80, category: "Backend" },
-        { name: "Python", level: 75, category: "Backend" },
-        { name: "Java", level: 85, category: "Backend" },
-        { name: "SQL", level: 80, category: "Database" }
+        { name: "Java", level: 70, category: "Programming" },
+        { name: "Python", level: 60, category: "Programming" },
+        { name: "JavaScript", level: 65, category: "Frontend" },
+        { name: "React", level: 60, category: "Frontend" },
+        { name: "Node.js", level: 50, category: "Backend" },
+        { name: "Java", level: 60, category: "Backend" },
+        { name: "SQL", level: 70, category: "Database" }
     ],
     projects: [
         {
             id: 1,
-            title: "E-commerce Platform",
-            description: "A full-stack e-commerce solution built with React and Node.js",
-            image: "/placeholder-project.jpg",
-            technologies: ["React", "Node.js", "MongoDB"],
-            githubUrl: "https://github.com/username/project1",
-            liveUrl: "https://project1.com"
+            title: "Scientific Live Calculater",
+            description: "A simple calculator application implemented in Java for performing basic arithmetic operations.",
+            image: "/Calci.png",
+            technologies: ["Html", "Css", "JavaScript"],
+            githubUrl: "https://github.com/HarishSuroju/calci.git",
+            liveUrl: "https://calci-two-psi.vercel.app/"
         }
     ],
     internships: [
         {
             id: 1,
-            company: "Tech Company",
-            position: "Software Development Intern",
-            duration: "Jun 2023 - Aug 2023",
-            description: "Worked on web development projects using React and Node.js",
-            skills: ["React", "Node.js", "Git"]
+            company: "AlgorithmAliens",
+            position: "Full-Stack Developer",
+            duration: "Aug 2025(Ongoing)",
+            description: "Worked as a full-stack developer at AlgorithmAliens, where I contributed to the development of its Website.",
+            skills: ["Html", "Tailwind CSS", "React", "JavaScript" , "Git", "Express"]
         }
     ],
     certificates: [

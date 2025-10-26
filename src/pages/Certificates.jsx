@@ -204,7 +204,7 @@ const Certificates = () => {
                                     <img 
                                         src={certificate.image} 
                                         alt={certificate.title} 
-                                        className="w-full h-48 object-cover rounded-lg cursor-pointer"
+                                        className="w-full h-48 object-cover rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:opacity-90"
                                         onClick={() => setSelectedCertificate(certificate)}
                                     />
                                 ) : (

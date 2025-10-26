@@ -15,9 +15,9 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Default admin credentials (in a real app, this would be handled by a backend)
-    const ADMIN_EMAIL = 'admin@portfolio.com';
-    const ADMIN_PASSWORD = 'admin123';
+    // Admin credentials from environment variables
+    const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@portfolio.com';
+    const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
 
     useEffect(() => {
         // Check if user is already logged in
@@ -46,11 +46,24 @@ export const AuthProvider = ({ children }) => {
         toast.success('Successfully logged out!');
     };
 
+    const resetPassword = (email) => {
+        // In a real application, this would send a password reset email
+        // For now, we'll just show a message
+        if (email === ADMIN_EMAIL) {
+            toast.success('Password reset instructions sent to your email!');
+            return true;
+        } else {
+            toast.error('Email not found');
+            return false;
+        }
+    };
+
     const value = {
         isAuthenticated,
         isLoading,
         login,
-        logout
+        logout,
+        resetPassword
     };
 
     return (
