@@ -73,7 +73,7 @@ const defaultPortfolioData = {
             title: "C++ Programming",
             issuer: "Saylor Academy",
             date: "2023",
-            image: "/Saylor C++.png",
+            image: "/Saylor-CPP.png",
             description: "C++ Programming certification"
         },
         {
