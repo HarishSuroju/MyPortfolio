@@ -33,16 +33,16 @@ const defaultPortfolioData = {
             liveUrl: "https://calci-two-psi.vercel.app/"
         }
     ],
-    internships: [
-        {
-            id: 1,
-            company: "AlgorithmAliens",
-            position: "Full-Stack Developer",
-            duration: "Aug 2025(Ongoing)",
-            description: "Worked as a full-stack developer at AlgorithmAliens, where I contributed to the development of its Website.",
-            skills: ["Html", "Tailwind CSS", "React", "JavaScript" , "Git", "Express"]
-        }
-    ],
+    // internships: [
+    //     {
+    //         id: 1,
+    //         company: "AlgorithmAliens",
+    //         position: "Full-Stack Developer",
+    //         duration: "Aug 2025(Ongoing)",
+    //         description: "Worked as a full-stack developer at AlgorithmAliens, where I contributed to the development of its Website.",
+    //         skills: ["Html", "Tailwind CSS", "React", "JavaScript" , "Git", "Express"]
+    //     }
+    // ],
     certificates: [
         {
             id: 1,

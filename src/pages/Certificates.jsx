@@ -184,9 +184,9 @@ const Certificates = () => {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                     {certificatesData.map((certificate, index) => (
-                        <div key={certificate.id || index} className="bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105 relative group">
+                        <div key={certificate.id || index} className="bg-white rounded-xl shadow-lg p-4 transform transition-transform hover:scale-105 relative group">
                             {isAuthenticated && (
                                 <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                     <button
@@ -194,7 +194,7 @@ const Certificates = () => {
                                         className="bg-red-500 hover:bg-red-600 text-white p-1 rounded"
                                         title="Remove certificate"
                                     >
-                                        <X size={16} />
+                                        <X size={14} />
                                     </button>
                                 </div>
                             )}
@@ -204,41 +204,41 @@ const Certificates = () => {
                                     <img 
                                         src={certificate.image} 
                                         alt={certificate.title} 
-                                        className="w-full h-48 object-cover rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:opacity-90"
+                                        className="w-full h-36 object-cover rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:opacity-90"
                                         onClick={() => setSelectedCertificate(certificate)}
                                     />
                                 ) : (
-                                    <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                                        <Award size={48} className="text-gray-400" />
+                                    <div className="w-full h-36 bg-gray-200 rounded-lg flex items-center justify-center">
+                                        <Award size={36} className="text-gray-400" />
                                     </div>
                                 )}
                             </div>
                             
-                            <h3 className="text-xl font-bold mb-2">{certificate.title}</h3>
-                            <p className="text-gray-700 mb-2">Issued by {certificate.issuer}</p>
+                            <h3 className="text-lg font-bold mb-1">{certificate.title}</h3>
+                            <p className="text-gray-700 text-sm mb-1">Issued by {certificate.issuer}</p>
                             {certificate.date && (
-                                <p className="text-gray-600 text-sm mb-4">{certificate.date}</p>
+                                <p className="text-gray-600 text-xs mb-2">{certificate.date}</p>
                             )}
                             {certificate.description && (
-                                <p className="text-gray-600 text-sm mb-4">{certificate.description}</p>
+                                <p className="text-gray-600 text-xs mb-3 line-clamp-2">{certificate.description}</p>
                             )}
                             
                             <div className="flex space-x-2">
                                 <button 
                                     onClick={() => setSelectedCertificate(certificate)}
-                                    className="inline-flex items-center text-violet-600 hover:text-violet-700 font-semibold"
+                                    className="inline-flex items-center text-violet-600 hover:text-violet-700 text-sm font-semibold"
                                 >
-                                    <Eye size={16} className="mr-1" />
-                                    View Certificate
+                                    <Eye size={14} className="mr-1" />
+                                    View
                                 </button>
                                 {certificate.credentialUrl && (
                                     <a
                                         href={certificate.credentialUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+                                        className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-semibold"
                                     >
-                                        <Award size={16} className="mr-1" />
+                                        <Award size={14} className="mr-1" />
                                         Verify
                                     </a>
                                 )}

@@ -8,6 +8,7 @@ const Skills = () => {
     const [skillsData, setSkillsData] = useState([]);
     const [isAddingSkill, setIsAddingSkill] = useState(false);
     const [newSkill, setNewSkill] = useState({ name: '', level: 50, category: 'Frontend' });
+    const [activeCategory, setActiveCategory] = useState('All');
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
@@ -53,6 +54,33 @@ const Skills = () => {
             'Other': 'bg-gray-500'
         };
         return colors[category] || colors['Other'];
+    };
+
+    const getCategoryGlowColor = (category) => {
+        const glowColors = {
+            'Frontend': 'hover:shadow-[0_0_15px_5px_rgba(59,130,246,0.5)]',
+            'Backend': 'hover:shadow-[0_0_15px_5px_rgba(34,197,94,0.5)]',
+            'Database': 'hover:shadow-[0_0_15px_5px_rgba(147,51,234,0.5)]',
+            'Mobile': 'hover:shadow-[0_0_15px_5px_rgba(234,179,8,0.5)]',
+            'DevOps': 'hover:shadow-[0_0_15px_5px_rgba(239,68,68,0.5)]',
+            'DSA': 'hover:shadow-[0_0_15px_5px_rgba(251,146,60,0.5)]',
+            'Other': 'hover:shadow-[0_0_15px_5px_rgba(107,114,128,0.5)]'
+        };
+        return glowColors[category] || glowColors['Other'];
+    };
+
+    // Get unique categories
+    const getCategories = () => {
+        const categories = [...new Set(skillsData.map(skill => skill.category))];
+        return ['All', ...categories];
+    };
+
+    // Filter skills by category
+    const getFilteredSkills = () => {
+        if (activeCategory === 'All') {
+            return skillsData;
+        }
+        return skillsData.filter(skill => skill.category === activeCategory);
     };
 
     return (
@@ -125,35 +153,55 @@ const Skills = () => {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {skillsData.map((skill, index) => (
-                        <div key={index} className="bg-white p-6 rounded-lg shadow-lg transform transition-transform hover:scale-105 relative group">
+                {/* Category Filter */}
+                <div className="flex flex-wrap gap-2 mb-8 justify-center">
+                    {getCategories().map((category) => (
+                        <button
+                            key={category}
+                            onClick={() => setActiveCategory(category)}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                                activeCategory === category
+                                    ? `${getCategoryColor(category)} text-white`
+                                    : 'bg-white text-gray-700 hover:bg-gray-200'
+                            }`}
+                        >
+                            {category}
+                        </button>
+                    ))}
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {getFilteredSkills().map((skill, index) => (
+                        <div 
+                            key={index} 
+                            className={`bg-white p-4 rounded-lg transform transition-all duration-300 hover:-translate-y-1 ${getCategoryGlowColor(skill.category)} hover:shadow-2xl relative group`}
+                        >
                             {isAuthenticated && (
                                 <button
                                     onClick={() => removeSkill(index)}
-                                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
                                     title="Remove skill"
                                 >
-                                    <X size={16} />
+                                    <X size={14} />
                                 </button>
                             )}
                             
-                            <div className={`w-12 h-12 ${getCategoryColor(skill.category)} rounded-full flex items-center justify-center text-white font-bold mb-4`}>
+                            <div className={`w-10 h-10 ${getCategoryColor(skill.category)} rounded-full flex items-center justify-center text-white font-bold mb-3 transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
                                 {skill.name.charAt(0).toUpperCase()}
                             </div>
                             
-                            <h3 className="text-xl font-semibold mb-2">{skill.name}</h3>
-                            <p className="text-sm text-gray-500 mb-3">{skill.category}</p>
+                            <h3 className="text-md font-semibold mb-1 transform transition-transform duration-300 group-hover:translate-x-1">{skill.name}</h3>
+                            <p className="text-xs text-gray-500 mb-2 transform transition-transform duration-300 group-hover:translate-x-1">{skill.category}</p>
                             
-                            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                            <div className="w-full bg-gray-200 rounded-full h-1.5 mb-1 overflow-hidden">
                                 <div 
-                                    className={`${getCategoryColor(skill.category)} h-2 rounded-full transition-all duration-300`}
+                                    className={`${getCategoryColor(skill.category)} h-1.5 rounded-full transition-all duration-500 ease-out`}
                                     style={{ width: `${skill.level}%` }}
                                 ></div>
                             </div>
                             
                             <div className="flex justify-between items-center">
-                                <span className="text-sm font-medium">{skill.level}%</span>
+                                <span className="text-xs font-medium transform transition-transform duration-300 group-hover:scale-110">{skill.level}%</span>
                                 {isAuthenticated && (
                                     <input
                                         type="range"
@@ -161,7 +209,7 @@ const Skills = () => {
                                         max="100"
                                         value={skill.level}
                                         onChange={(e) => updateSkillLevel(index, parseInt(e.target.value))}
-                                        className="w-20"
+                                        className="w-16"
                                     />
                                 )}
                             </div>
@@ -169,9 +217,13 @@ const Skills = () => {
                     ))}
                 </div>
 
-                {skillsData.length === 0 && (
+                {getFilteredSkills().length === 0 && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">No skills added yet.</p>
+                        <p className="text-gray-500 text-lg">
+                            {skillsData.length === 0 
+                                ? "No skills added yet." 
+                                : `No skills found in the ${activeCategory} category.`}
+                        </p>
                         {isAuthenticated && (
                             <button
                                 onClick={() => setIsAddingSkill(true)}
