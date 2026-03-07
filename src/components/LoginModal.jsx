@@ -10,9 +10,9 @@ const LoginModal = ({ isOpen, onClose }) => {
     const [resetEmail, setResetEmail] = useState('');
     const { login, resetPassword } = useAuth();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = login(email, password);
+        const success = await login(email, password);
         if (success) {
             setEmail('');
             setPassword('');
@@ -20,9 +20,9 @@ const LoginModal = ({ isOpen, onClose }) => {
         }
     };
 
-    const handlePasswordReset = (e) => {
+    const handlePasswordReset = async (e) => {
         e.preventDefault();
-        const success = resetPassword(resetEmail);
+        const success = await resetPassword(resetEmail);
         if (success) {
             setResetEmail('');
             setShowForgotPassword(false);

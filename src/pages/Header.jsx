@@ -9,9 +9,9 @@ const Header = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [showCMSDashboard, setShowCMSDashboard] = useState(false);
 
-    const handleAuthAction = () => {
+    const handleAuthAction = async () => {
         if (isAuthenticated) {
-            logout();
+            await logout();
         } else {
             setShowLoginModal(true);
         }
@@ -32,6 +32,7 @@ const Header = () => {
                                 <li><a href="#projects" className="text-gray-600 hover:text-accent transition-colors duration-300">Projects</a></li>
                                 <li><a href="#internships" className="text-gray-600 hover:text-accent transition-colors duration-300">Internships</a></li>
                                 <li><a href="#certificates" className="text-gray-600 hover:text-accent transition-colors duration-300">Certificates</a></li>
+                                <li><a href="#leetcode" className="text-gray-600 hover:text-accent transition-colors duration-300">LeetCode</a></li>
                                 <li><a href="#contact" className="text-gray-600 hover:text-accent transition-colors duration-300">Contact</a></li>
                             </ul>
                         </nav>

@@ -12,13 +12,16 @@ const Skills = () => {
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const data = getPortfolioData();
-        setSkillsData(data.skills || []);
+        const loadData = async () => {
+            const data = await getPortfolioData();
+            setSkillsData(data.skills || []);
+        };
+        loadData();
     }, []);
 
-    const updateSkillsData = (updatedSkills) => {
+    const updateSkillsData = async (updatedSkills) => {
         setSkillsData(updatedSkills);
-        updatePortfolioSection('skills', updatedSkills);
+        await updatePortfolioSection('skills', updatedSkills);
     };
 
     const addSkill = () => {

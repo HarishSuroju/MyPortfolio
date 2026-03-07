@@ -6,14 +6,17 @@ const Hero = () => {
     const [heroData, setHeroData] = useState(null);
 
     useEffect(() => {
-        const data = getPortfolioData();
-        setHeroData(data.hero);
+        const loadData = async () => {
+            const data = await getPortfolioData();
+            setHeroData(data.hero);
+        };
+        loadData();
     }, []);
 
-    const updateHeroData = (field, value) => {
+    const updateHeroData = async (field, value) => {
         const updatedHero = { ...heroData, [field]: value };
         setHeroData(updatedHero);
-        updatePortfolioSection('hero', updatedHero);
+        await updatePortfolioSection('hero', updatedHero);
     };
 
     if (!heroData) return <div>Loading...</div>;

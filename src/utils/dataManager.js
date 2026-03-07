@@ -1,3 +1,5 @@
+import { supabase } from '../lib/supabase';
+
 // Default portfolio data structure
 const defaultPortfolioData = {
     hero: {
@@ -33,16 +35,6 @@ const defaultPortfolioData = {
             liveUrl: "https://calci-two-psi.vercel.app/"
         }
     ],
-    // internships: [
-    //     {
-    //         id: 1,
-    //         company: "AlgorithmAliens",
-    //         position: "Full-Stack Developer",
-    //         duration: "Aug 2025(Ongoing)",
-    //         description: "Worked as a full-stack developer at AlgorithmAliens, where I contributed to the development of its Website.",
-    //         skills: ["Html", "Tailwind CSS", "React", "JavaScript" , "Git", "Express"]
-    //     }
-    // ],
     certificates: [
         {
             id: 1,
@@ -102,59 +94,177 @@ const defaultPortfolioData = {
             github: "https://github.com/username",
             twitter: "https://twitter.com/username"
         }
+    },
+    leetcode: {
+        username: ""
     }
 };
 
-// Data management utilities
-export const getPortfolioData = () => {
-    const savedData = localStorage.getItem('portfolioData');
-    if (savedData) {
+// ---------------------------------------------------------------------------
+// Data management utilities — Supabase (primary) + localStorage (cache/fallback)
+// ---------------------------------------------------------------------------
+
+/**
+ * Fetch the full portfolio object.
+ * Tries Supabase first, caches in localStorage, falls back to localStorage / defaults.
+ */
+export const getPortfolioData = async () => {
+    // Try Supabase
+    if (supabase) {
         try {
-            return JSON.parse(savedData);
-        } catch (error) {
-            console.error('Error parsing portfolio data:', error);
+            const { data, error } = await supabase
+                .from('portfolio_sections')
+                .select('section_key, data');
+
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                const portfolioData = { ...defaultPortfolioData };
+                data.forEach(row => {
+                    portfolioData[row.section_key] = row.data;
+                });
+                // Cache for fast subsequent loads
+                localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+                return portfolioData;
+            }
+            // Table exists but is empty — return defaults
             return defaultPortfolioData;
+        } catch (error) {
+            console.error('Supabase fetch failed, using cache:', error);
+        }
+    }
+
+    // Fallback: localStorage cache → defaults
+    const cached = localStorage.getItem('portfolioData');
+    if (cached) {
+        try {
+            return JSON.parse(cached);
+        } catch {
+            // corrupt cache
         }
     }
     return defaultPortfolioData;
 };
 
-export const savePortfolioData = (data) => {
-    try {
-        localStorage.setItem('portfolioData', JSON.stringify(data));
-        return true;
-    } catch (error) {
-        console.error('Error saving portfolio data:', error);
-        return false;
+/**
+ * Save the entire portfolio object (bulk write).
+ */
+export const savePortfolioData = async (data) => {
+    // Update localStorage cache immediately
+    localStorage.setItem('portfolioData', JSON.stringify(data));
+
+    if (supabase) {
+        try {
+            const rows = Object.keys(data).map(key => ({
+                section_key: key,
+                data: data[key],
+            }));
+
+            const { error } = await supabase
+                .from('portfolio_sections')
+                .upsert(rows, { onConflict: 'section_key' });
+
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Supabase bulk save failed:', error);
+            return false;
+        }
     }
+    return true;
 };
 
-export const updatePortfolioSection = (section, data) => {
-    const currentData = getPortfolioData();
-    const updatedData = {
-        ...currentData,
-        [section]: data
-    };
-    return savePortfolioData(updatedData);
+/**
+ * Update a single section (partial write).
+ */
+export const updatePortfolioSection = async (section, sectionData) => {
+    // Update localStorage cache immediately for instant UI
+    const cached = localStorage.getItem('portfolioData');
+    const currentData = cached ? JSON.parse(cached) : { ...defaultPortfolioData };
+    currentData[section] = sectionData;
+    localStorage.setItem('portfolioData', JSON.stringify(currentData));
+
+    if (supabase) {
+        try {
+            const { error } = await supabase
+                .from('portfolio_sections')
+                .upsert(
+                    { section_key: section, data: sectionData },
+                    { onConflict: 'section_key' }
+                );
+
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Supabase section update failed:', error);
+            return false;
+        }
+    }
+    return true;
 };
 
-export const resetPortfolioData = () => {
-    localStorage.removeItem('portfolioData');
+/**
+ * Reset all data to defaults (DB + cache).
+ */
+export const resetPortfolioData = async () => {
+    localStorage.setItem('portfolioData', JSON.stringify(defaultPortfolioData));
+
+    if (supabase) {
+        try {
+            const rows = Object.keys(defaultPortfolioData).map(key => ({
+                section_key: key,
+                data: defaultPortfolioData[key],
+            }));
+
+            const { error } = await supabase
+                .from('portfolio_sections')
+                .upsert(rows, { onConflict: 'section_key' });
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Supabase reset failed:', error);
+        }
+    }
     return defaultPortfolioData;
 };
 
-// Force reset function to load all certificates
-export const resetCertificates = () => {
-    const currentData = getPortfolioData();
+/**
+ * Reset certificates section to defaults.
+ */
+export const resetCertificates = async () => {
+    const currentData = await getPortfolioData();
     const updatedData = {
         ...currentData,
         certificates: defaultPortfolioData.certificates
     };
-    savePortfolioData(updatedData);
+    await savePortfolioData(updatedData);
     return updatedData;
 };
 
-// Image handling utilities
+/**
+ * Push current default data to Supabase (first-time DB initialization).
+ */
+export const initializeDatabase = async () => {
+    if (!supabase) throw new Error('Supabase is not configured');
+
+    const rows = Object.keys(defaultPortfolioData).map(key => ({
+        section_key: key,
+        data: defaultPortfolioData[key],
+    }));
+
+    const { error } = await supabase
+        .from('portfolio_sections')
+        .upsert(rows, { onConflict: 'section_key' });
+
+    if (error) throw error;
+    localStorage.setItem('portfolioData', JSON.stringify(defaultPortfolioData));
+    return true;
+};
+
+// ---------------------------------------------------------------------------
+// Image handling utilities (unchanged — these are client-side only)
+// ---------------------------------------------------------------------------
+
 export const handleImageUpload = (file) => {
     return new Promise((resolve, reject) => {
         if (!file) {

@@ -19,13 +19,16 @@ const Projects = () => {
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const data = getPortfolioData();
-        setProjectsData(data.projects || []);
+        const loadData = async () => {
+            const data = await getPortfolioData();
+            setProjectsData(data.projects || []);
+        };
+        loadData();
     }, []);
 
-    const updateProjectsData = (updatedProjects) => {
+    const updateProjectsData = async (updatedProjects) => {
         setProjectsData(updatedProjects);
-        updatePortfolioSection('projects', updatedProjects);
+        await updatePortfolioSection('projects', updatedProjects);
     };
 
     const addProject = () => {

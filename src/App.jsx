@@ -9,6 +9,7 @@ import Projects from './pages/Projects.jsx';
 import Internships from './pages/Internships.jsx';
 import Certificates from './pages/Certificates.jsx';
 import Contact from './pages/Contacts.jsx';
+import LeetCode from './pages/LeetCode.jsx';
 import Footer from './pages/Footer.jsx';
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
                     <Projects />
                     <Internships />
                     <Certificates />
+                    <LeetCode />
                     <Contact />
                 </main>
                 <Footer />

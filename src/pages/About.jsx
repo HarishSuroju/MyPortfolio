@@ -6,14 +6,17 @@ const About = () => {
     const [aboutData, setAboutData] = useState(null);
 
     useEffect(() => {
-        const data = getPortfolioData();
-        setAboutData(data.about);
+        const loadData = async () => {
+            const data = await getPortfolioData();
+            setAboutData(data.about);
+        };
+        loadData();
     }, []);
 
-    const updateAboutData = (field, value) => {
+    const updateAboutData = async (field, value) => {
         const updatedAbout = { ...aboutData, [field]: value };
         setAboutData(updatedAbout);
-        updatePortfolioSection('about', updatedAbout);
+        await updatePortfolioSection('about', updatedAbout);
     };
 
     if (!aboutData) return <div>Loading...</div>;

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
@@ -14,53 +15,70 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-
-    // Admin credentials from environment variables
-    const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'admin@portfolio.com';
-    const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        // Check if user is already logged in
-        const authStatus = localStorage.getItem('isAuthenticated');
-        if (authStatus === 'true') {
-            setIsAuthenticated(true);
+        if (!supabase) {
+            setIsLoading(false);
+            return;
         }
-        setIsLoading(false);
+
+        // Check current session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+            setIsAuthenticated(!!session?.user);
+            setIsLoading(false);
+        });
+
+        // Listen for auth state changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+            setIsAuthenticated(!!session?.user);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
-    const login = (email, password) => {
-        if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-            setIsAuthenticated(true);
-            localStorage.setItem('isAuthenticated', 'true');
-            toast.success('Successfully logged in!');
-            return true;
-        } else {
-            toast.error('Invalid credentials');
+    const login = async (email, password) => {
+        if (!supabase) {
+            toast.error('Supabase is not configured. Check your environment variables.');
             return false;
         }
+
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+            toast.error(error.message);
+            return false;
+        }
+        toast.success('Successfully logged in!');
+        return true;
     };
 
-    const logout = () => {
-        setIsAuthenticated(false);
-        localStorage.removeItem('isAuthenticated');
+    const logout = async () => {
+        if (!supabase) return;
+        await supabase.auth.signOut();
         toast.success('Successfully logged out!');
     };
 
-    const resetPassword = (email) => {
-        // In a real application, this would send a password reset email
-        // For now, we'll just show a message
-        if (email === ADMIN_EMAIL) {
-            toast.success('Password reset instructions sent to your email!');
-            return true;
-        } else {
-            toast.error('Email not found');
+    const resetPassword = async (email) => {
+        if (!supabase) {
+            toast.error('Supabase is not configured.');
             return false;
         }
+
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) {
+            toast.error(error.message);
+            return false;
+        }
+        toast.success('Password reset email sent! Check your inbox.');
+        return true;
     };
 
     const value = {
         isAuthenticated,
         isLoading,
+        user,
         login,
         logout,
         resetPassword

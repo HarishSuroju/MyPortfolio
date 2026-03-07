@@ -19,13 +19,16 @@ const Internships = () => {
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const data = getPortfolioData();
-        setInternshipsData(data.internships || []);
+        const loadData = async () => {
+            const data = await getPortfolioData();
+            setInternshipsData(data.internships || []);
+        };
+        loadData();
     }, []);
 
-    const updateInternshipsData = (updatedInternships) => {
+    const updateInternshipsData = async (updatedInternships) => {
         setInternshipsData(updatedInternships);
-        updatePortfolioSection('internships', updatedInternships);
+        await updatePortfolioSection('internships', updatedInternships);
     };
 
     const addInternship = () => {
@@ -61,7 +64,7 @@ const Internships = () => {
     };
 
     const handleArrayFieldChange = (value, setter, currentData, fieldName) => {
-        const arrayData = value.split('\n').map(item => item.trim()).filter(item => item !== '');
+        const arrayData = value.split('\n');
         setter({ ...currentData, [fieldName]: arrayData });
     };
 
@@ -136,7 +139,7 @@ const Internships = () => {
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Skills (one per line)</label>
                                     <textarea
-                                        placeholder="Full-stack development&#10;Database design&#10;API development"
+                                        placeholder={'React\nNode.js\nPostgreSQL\nTailwind CSS'}
                                         value={newInternship.skills.join('\n')}
                                         onChange={(e) => handleArrayFieldChange(e.target.value, setNewInternship, newInternship, 'skills')}
                                         rows={4}
@@ -146,7 +149,7 @@ const Internships = () => {
                                 <div>
                                     <label className="block text-sm font-medium mb-2">Achievements (one per line)</label>
                                     <textarea
-                                        placeholder="Delivered 2 major projects&#10;Received positive feedback&#10;Improved performance by 30%"
+                                        placeholder={'Delivered 2 major projects\nReceived positive feedback\nImproved performance by 30%'}
                                         value={newInternship.achievements.join('\n')}
                                         onChange={(e) => handleArrayFieldChange(e.target.value, setNewInternship, newInternship, 'achievements')}
                                         rows={4}

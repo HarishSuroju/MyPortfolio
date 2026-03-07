@@ -19,17 +19,20 @@ const Certificates = () => {
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
-        const data = getPortfolioData();
-        setCertificatesData(data.certificates || []);
+        const loadData = async () => {
+            const data = await getPortfolioData();
+            setCertificatesData(data.certificates || []);
+        };
+        loadData();
     }, []);
 
-    const updateCertificatesData = (updatedCertificates) => {
+    const updateCertificatesData = async (updatedCertificates) => {
         setCertificatesData(updatedCertificates);
-        updatePortfolioSection('certificates', updatedCertificates);
+        await updatePortfolioSection('certificates', updatedCertificates);
     };
 
-    const resetToAllCertificates = () => {
-        const updatedData = resetCertificates();
+    const resetToAllCertificates = async () => {
+        const updatedData = await resetCertificates();
         setCertificatesData(updatedData.certificates);
         toast.success('All certificates restored!');
     };

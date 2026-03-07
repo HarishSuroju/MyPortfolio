@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { getPortfolioData, savePortfolioData, resetPortfolioData } from '../utils/dataManager';
+import { getPortfolioData, savePortfolioData, resetPortfolioData, initializeDatabase } from '../utils/dataManager';
+import { supabase } from '../lib/supabase';
 import { Download, Upload, RefreshCw, Save, Database, BarChart3, FileText, Image, Settings } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -12,9 +13,12 @@ const CMSDashboard = ({ isOpen, onClose }) => {
 
     useEffect(() => {
         if (isOpen && isAuthenticated) {
-            const data = getPortfolioData();
-            setPortfolioData(data);
-            setExportData(JSON.stringify(data, null, 2));
+            const loadData = async () => {
+                const data = await getPortfolioData();
+                setPortfolioData(data);
+                setExportData(JSON.stringify(data, null, 2));
+            };
+            loadData();
         }
     }, [isOpen, isAuthenticated]);
 
@@ -37,13 +41,13 @@ const CMSDashboard = ({ isOpen, onClose }) => {
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             try {
                 const importedData = JSON.parse(e.target.result);
-                savePortfolioData(importedData);
+                await savePortfolioData(importedData);
                 setPortfolioData(importedData);
                 toast.success('Portfolio data imported successfully!');
-                window.location.reload(); // Refresh to show new data
+                window.location.reload();
             } catch (error) {
                 toast.error('Invalid JSON file. Please check the format.');
             }
@@ -51,9 +55,9 @@ const CMSDashboard = ({ isOpen, onClose }) => {
         reader.readAsText(file);
     };
 
-    const handleResetData = () => {
+    const handleResetData = async () => {
         if (window.confirm('Are you sure? This will reset all your portfolio data to defaults.')) {
-            const defaultData = resetPortfolioData();
+            const defaultData = await resetPortfolioData();
             setPortfolioData(defaultData);
             toast.success('Portfolio data reset to defaults!');
             window.location.reload();
@@ -204,10 +208,10 @@ const CMSDashboard = ({ isOpen, onClose }) => {
                                 placeholder="Portfolio JSON data will appear here..."
                             />
                             <button
-                                onClick={() => {
+                                onClick={async () => {
                                     try {
                                         const parsedData = JSON.parse(exportData);
-                                        savePortfolioData(parsedData);
+                                        await savePortfolioData(parsedData);
                                         setPortfolioData(parsedData);
                                         toast.success('Data updated successfully!');
                                         window.location.reload();
@@ -282,20 +286,34 @@ const CMSDashboard = ({ isOpen, onClose }) => {
                             
                             <div className="space-y-4">
                                 <div className="border border-gray-200 p-4 rounded-lg">
-                                    <h4 className="font-semibold text-gray-900 mb-2">Storage Information</h4>
+                                    <h4 className="font-semibold text-gray-900 mb-2">Database Status</h4>
                                     <p className="text-gray-600 text-sm mb-2">
-                                        Data is currently stored in your browser's localStorage.
+                                        {supabase 
+                                            ? '✅ Supabase connected — data is persisted in the database.'
+                                            : '⚠️ Supabase not configured — data is stored in browser localStorage only.'}
                                     </p>
-                                    <p className="text-gray-500 text-xs">
-                                        Data size: ~{new TextEncoder().encode(JSON.stringify(portfolioData)).length} bytes
-                                    </p>
+                                    {supabase && (
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    await initializeDatabase();
+                                                    toast.success('Database initialized with default data!');
+                                                } catch (error) {
+                                                    toast.error('Failed to initialize: ' + error.message);
+                                                }
+                                            }}
+                                            className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded mt-2"
+                                        >
+                                            <Database size={16} />
+                                            <span>Initialize Database with Defaults</span>
+                                        </button>
+                                    )}
                                 </div>
 
                                 <div className="border border-gray-200 p-4 rounded-lg">
-                                    <h4 className="font-semibold text-gray-900 mb-2">Admin Credentials</h4>
-                                    <p className="text-gray-600 text-sm">
-                                        Email: admin@portfolio.com<br/>
-                                        Password: admin123
+                                    <h4 className="font-semibold text-gray-900 mb-2">Storage Information</h4>
+                                    <p className="text-gray-600 text-sm mb-2">
+                                        Local cache size: ~{new TextEncoder().encode(JSON.stringify(portfolioData)).length} bytes
                                     </p>
                                 </div>
 
@@ -308,6 +326,8 @@ const CMSDashboard = ({ isOpen, onClose }) => {
                                         <li>✅ Responsive design</li>
                                         <li>✅ Auto-save functionality</li>
                                         <li>✅ Guest-friendly display</li>
+                                        <li>✅ Supabase database persistence</li>
+                                        <li>✅ Supabase authentication</li>
                                     </ul>
                                 </div>
                             </div>
