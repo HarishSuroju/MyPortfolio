@@ -14,7 +14,8 @@ const Projects = () => {
         image: '',
         technologies: [],
         githubUrl: '',
-        liveUrl: ''
+        liveUrl: '',
+        inProgress: false
     });
     const { isAuthenticated } = useAuth();
 
@@ -46,7 +47,8 @@ const Projects = () => {
                 image: '',
                 technologies: [],
                 githubUrl: '',
-                liveUrl: ''
+                liveUrl: '',
+                inProgress: false
             });
             setIsAddingProject(false);
             toast.success('Project added successfully!');
@@ -65,7 +67,8 @@ const Projects = () => {
         const updatedProjects = [...projectsData];
         updatedProjects[index] = {
             ...updatedProject,
-            technologies: updatedProject.technologies.filter(tech => tech.trim() !== '')
+            technologies: updatedProject.technologies.filter(tech => tech.trim() !== ''),
+            inProgress: Boolean(updatedProject.inProgress)
         };
         updateProjectsData(updatedProjects);
         setEditingProject(null);
@@ -90,7 +93,7 @@ const Projects = () => {
 
     const ProjectCard = ({ project, index }) => {
         const [isEditing, setIsEditing] = useState(false);
-        const [editData, setEditData] = useState(project);
+        const [editData, setEditData] = useState({ inProgress: false, ...project });
 
         const handleSave = () => {
             updateProject(index, editData);
@@ -98,7 +101,7 @@ const Projects = () => {
         };
 
         const handleCancel = () => {
-            setEditData(project);
+            setEditData({ inProgress: false, ...project });
             setIsEditing(false);
         };
 
@@ -158,6 +161,16 @@ const Projects = () => {
                             placeholder="Live demo URL"
                             className="w-full p-2 border border-gray-300 rounded"
                         />
+
+                        <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                            <input
+                                type="checkbox"
+                                checked={Boolean(editData.inProgress)}
+                                onChange={(e) => setEditData({ ...editData, inProgress: e.target.checked })}
+                                className="h-4 w-4 accent-violet-600"
+                            />
+                            Mark as In Progress
+                        </label>
                         
                         <div className="flex space-x-2">
                             <button
@@ -181,7 +194,7 @@ const Projects = () => {
         return (
             <div className="bg-gray-100 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 relative group">
                 {isAuthenticated && (
-                    <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <div className="absolute top-2 right-2 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
                         <button
                             onClick={() => setIsEditing(true)}
                             className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded"
@@ -201,6 +214,12 @@ const Projects = () => {
                 
                 {project.image && (
                     <img src={project.image} alt={project.title} className="w-full h-48 object-cover transition-all duration-300 hover:scale-110 hover:opacity-90" />
+                )}
+
+                {project.inProgress && (
+                    <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full z-10">
+                        In Progress
+                    </span>
                 )}
                 
                 <div className="p-6">
@@ -249,12 +268,12 @@ const Projects = () => {
     return (
         <section id="projects" className="section py-20 px-6 bg-white">
             <div className="container mx-auto">
-                <div className="flex justify-between items-center mb-12">
-                    <h2 className="text-3xl font-bold text-center flex-1">My Projects</h2>
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
+                    <h2 className="text-3xl font-bold text-center flex-1 sm:text-left">My Projects</h2>
                     {isAuthenticated && (
                         <button
                             onClick={() => setIsAddingProject(true)}
-                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full"
+                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full self-center sm:self-auto"
                             title="Add Project"
                         >
                             <Plus size={20} />
@@ -314,6 +333,16 @@ const Projects = () => {
                                     className="p-2 border border-gray-300 rounded"
                                 />
                             </div>
+
+                            <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                                <input
+                                    type="checkbox"
+                                    checked={Boolean(newProject.inProgress)}
+                                    onChange={(e) => setNewProject({ ...newProject, inProgress: e.target.checked })}
+                                    className="h-4 w-4 accent-violet-600"
+                                />
+                                Mark as In Progress
+                            </label>
                             
                             {newProject.image && (
                                 <img src={newProject.image} alt="Preview" className="w-32 h-20 object-cover rounded" />

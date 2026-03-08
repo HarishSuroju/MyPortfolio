@@ -122,7 +122,7 @@ const EditableContent = ({
             {children}
             <button
                 onClick={() => setIsEditing(true)}
-                className="absolute top-0 right-0 bg-violet-500 hover:bg-violet-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 bg-violet-500 hover:bg-violet-600 text-white p-1.5 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                 title="Edit"
             >
                 {type === 'image' ? <Upload size={16} /> : <Edit size={16} />}

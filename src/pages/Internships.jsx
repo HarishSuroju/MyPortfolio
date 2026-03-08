@@ -71,9 +71,9 @@ const Internships = () => {
     return (
         <section id="internships" className="section py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
             <div className="container mx-auto px-6">
-                <div className="flex justify-between items-center mb-12">
-                    <div className="text-center flex-1">
-                        <h2 className="text-4xl font-bold text-gray-900 mb-4">Professional Internships</h2>
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
+                    <div className="text-center flex-1 sm:text-left">
+                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Professional Internships</h2>
                         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                             Practical experience gained through internships and professional development
                         </p>
@@ -81,7 +81,7 @@ const Internships = () => {
                     {isAuthenticated && (
                         <button
                             onClick={() => setIsAddingInternship(true)}
-                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full ml-4"
+                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full self-center sm:self-auto sm:ml-4"
                             title="Add Internship"
                         >
                             <Plus size={20} />
@@ -180,7 +180,7 @@ const Internships = () => {
                     {internshipsData.map((internship, index) => (
                         <div key={internship.id || index} className="bg-white rounded-2xl shadow-xl overflow-hidden relative group">
                             {isAuthenticated && (
-                                <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <div className="absolute top-4 right-4 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
                                     <button
                                         onClick={() => removeInternship(index)}
                                         className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"

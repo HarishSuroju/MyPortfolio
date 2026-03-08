@@ -89,12 +89,12 @@ const Skills = () => {
     return (
         <section id="skills" className="section py-20 px-6 bg-gray-100">
             <div className="container mx-auto">
-                <div className="flex justify-between items-center mb-12">
-                    <h2 className="text-3xl font-bold text-center flex-1">My Skills</h2>
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
+                    <h2 className="text-3xl font-bold text-center flex-1 sm:text-left">My Skills</h2>
                     {isAuthenticated && (
                         <button
                             onClick={() => setIsAddingSkill(true)}
-                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full"
+                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full self-center sm:self-auto"
                             title="Add Skill"
                         >
                             <Plus size={20} />
@@ -182,7 +182,7 @@ const Skills = () => {
                             {isAuthenticated && (
                                 <button
                                     onClick={() => removeSkill(index)}
-                                    className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                                     title="Remove skill"
                                 >
                                     <X size={14} />

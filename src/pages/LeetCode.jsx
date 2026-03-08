@@ -158,12 +158,12 @@ const LeetCode = () => {
         <section id="leetcode" className="section py-20 px-6 bg-gradient-to-br from-amber-50 to-orange-100">
             <div className="container mx-auto">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-12">
+                <div className="flex justify-between items-center mb-8 sm:mb-12">
                     <div className="text-center flex-1">
-                        <h2 className="text-4xl font-bold text-gray-900 mb-2">LeetCode Profile</h2>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">LeetCode Profile</h2>
                         <div className="flex items-center justify-center space-x-2 text-gray-600">
                             {editingUsername ? (
-                                <div className="flex items-center space-x-2">
+                                <div className="flex flex-wrap items-center justify-center gap-2">
                                     <input type="text" value={usernameInput} onChange={(e) => setUsernameInput(e.target.value)}
                                         className="px-3 py-1 border border-gray-300 rounded" autoFocus
                                         onKeyDown={(e) => { if (e.key === 'Enter') saveUsername(); if (e.key === 'Escape') setEditingUsername(false); }} />
@@ -206,18 +206,18 @@ const LeetCode = () => {
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="bg-white rounded-xl p-6 shadow text-center">
                                 <Target className="mx-auto mb-2 text-orange-500" size={28} />
-                                <div className="text-3xl font-bold text-gray-900">{solved?.totalSolved ?? profile?.totalSolved ?? 0}</div>
+                                <div className="text-2xl sm:text-3xl font-bold text-gray-900">{solved?.totalSolved ?? profile?.totalSolved ?? 0}</div>
                                 <div className="text-gray-500 text-sm">Problems Solved</div>
                                 <div className="text-xs text-gray-400 mt-1">of {solved?.totalQuestions ?? profile?.totalQuestions ?? '?'}</div>
                             </div>
                             <div className="bg-white rounded-xl p-6 shadow text-center">
                                 <Trophy className="mx-auto mb-2 text-yellow-500" size={28} />
-                                <div className="text-3xl font-bold text-gray-900">{(solved?.ranking || profile?.ranking) ? (solved?.ranking || profile?.ranking).toLocaleString() : 'N/A'}</div>
+                                <div className="text-2xl sm:text-3xl font-bold text-gray-900">{(solved?.ranking || profile?.ranking) ? (solved?.ranking || profile?.ranking).toLocaleString() : 'N/A'}</div>
                                 <div className="text-gray-500 text-sm">Global Ranking</div>
                             </div>
                             <div className="bg-white rounded-xl p-6 shadow text-center">
                                 <Flame className="mx-auto mb-2 text-red-500" size={28} />
-                                <div className="text-3xl font-bold text-gray-900">{contest?.contestRating ? Math.round(contest.contestRating) : 'N/A'}</div>
+                                <div className="text-2xl sm:text-3xl font-bold text-gray-900">{contest?.contestRating ? Math.round(contest.contestRating) : 'N/A'}</div>
                                 <div className="text-gray-500 text-sm">Contest Rating</div>
                                 {contest?.contestTopPercentage && (
                                     <div className="text-xs text-gray-400 mt-1">Top {contest.contestTopPercentage.toFixed(1)}%</div>
@@ -225,7 +225,7 @@ const LeetCode = () => {
                             </div>
                             <div className="bg-white rounded-xl p-6 shadow text-center">
                                 <Code className="mx-auto mb-2 text-violet-500" size={28} />
-                                <div className="text-3xl font-bold text-gray-900">{contest?.contestAttend ?? 'N/A'}</div>
+                                <div className="text-2xl sm:text-3xl font-bold text-gray-900">{contest?.contestAttend ?? 'N/A'}</div>
                                 <div className="text-gray-500 text-sm">Contests Attended</div>
                             </div>
                         </div>

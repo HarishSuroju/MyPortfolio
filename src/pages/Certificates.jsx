@@ -87,9 +87,9 @@ const Certificates = () => {
     return (
         <section id="certificates" className="section py-20 px-6 bg-gray-100">
             <div className="container mx-auto">
-                <div className="flex justify-between items-center mb-12">
-                    <h2 className="text-3xl font-bold text-center flex-1">Certificates</h2>
-                    <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
+                    <h2 className="text-3xl font-bold text-center flex-1 sm:text-left">Certificates</h2>
+                    <div className="flex space-x-2 self-center sm:self-auto">
                         {isAuthenticated && (
                             <>
                                 <button
@@ -191,7 +191,7 @@ const Certificates = () => {
                     {certificatesData.map((certificate, index) => (
                         <div key={certificate.id || index} className="bg-white rounded-xl shadow-lg p-4 transform transition-transform hover:scale-105 relative group">
                             {isAuthenticated && (
-                                <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                <div className="absolute top-2 right-2 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
                                     <button
                                         onClick={() => removeCertificate(index)}
                                         className="bg-red-500 hover:bg-red-600 text-white p-1 rounded"
@@ -280,7 +280,7 @@ const Certificates = () => {
                                     onClick={() => setSelectedCertificate(null)}
                                     className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
                                 >
-                                    ×
+                                    X
                                 </button>
                             </div>
                             <div className="p-4">
