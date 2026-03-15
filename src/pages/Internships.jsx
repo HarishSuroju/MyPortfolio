@@ -17,6 +17,8 @@ const Internships = () => {
         achievements: []
     });
     const { isAuthenticated } = useAuth();
+    const [editIndex, setEditIndex] = useState(null);
+    const [editInternship, setEditInternship] = useState({ company: '', position: '', duration: '', location: '', description: '', skills: [], achievements: [] });
 
     useEffect(() => {
         const loadData = async () => {
@@ -61,6 +63,29 @@ const Internships = () => {
         const updatedInternships = internshipsData.filter((_, i) => i !== index);
         updateInternshipsData(updatedInternships);
         toast.success('Internship removed successfully!');
+    };
+
+    const startEditInternship = (index) => {
+        setEditIndex(index);
+        setEditInternship({ ...internshipsData[index], skills: [...internshipsData[index].skills], achievements: [...internshipsData[index].achievements] });
+    };
+
+    const cancelEditInternship = () => {
+        setEditIndex(null);
+        setEditInternship({ company: '', position: '', duration: '', location: '', description: '', skills: [], achievements: [] });
+    };
+
+    const saveEditInternship = () => {
+        if (editInternship.company.trim() && editInternship.position.trim()) {
+            const updatedInternships = [...internshipsData];
+            updatedInternships[editIndex] = { ...editInternship, skills: editInternship.skills.filter(s => s.trim() !== ''), achievements: editInternship.achievements.filter(a => a.trim() !== '') };
+            updateInternshipsData(updatedInternships);
+            setEditIndex(null);
+            setEditInternship({ company: '', position: '', duration: '', location: '', description: '', skills: [], achievements: [] });
+            toast.success('Internship updated successfully!');
+        } else {
+            toast.error('Please fill in company and position');
+        }
     };
 
     const handleArrayFieldChange = (value, setter, currentData, fieldName) => {
@@ -179,7 +204,7 @@ const Internships = () => {
                 <div className="grid gap-8 md:gap-12">
                     {internshipsData.map((internship, index) => (
                         <div key={internship.id || index} className="bg-white rounded-2xl shadow-xl overflow-hidden relative group">
-                            {isAuthenticated && (
+                            {isAuthenticated && editIndex !== index && (
                                 <div className="absolute top-4 right-4 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
                                     <button
                                         onClick={() => removeInternship(index)}
@@ -188,68 +213,147 @@ const Internships = () => {
                                     >
                                         <X size={16} />
                                     </button>
+                                    <button
+                                        onClick={() => startEditInternship(index)}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+                                        title="Edit internship"
+                                    >
+                                        <Edit size={16} />
+                                    </button>
                                 </div>
                             )}
-                            
-                            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
-                                <h3 className="text-2xl font-bold mb-2">{internship.position}</h3>
-                                <p className="text-blue-100 text-lg font-semibold">{internship.company}</p>
-                                <div className="flex items-center gap-4 mt-2 text-blue-200">
-                                    {internship.duration && (
-                                        <div className="flex items-center gap-1">
-                                            <Calendar size={16} />
-                                            <span>{internship.duration}</span>
-                                        </div>
-                                    )}
-                                    {internship.location && (
-                                        <div className="flex items-center gap-1">
-                                            <MapPin size={16} />
-                                            <span>{internship.location}</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="p-6">
-                                {internship.description && (
-                                    <p className="text-gray-700 text-lg mb-6 leading-relaxed">{internship.description}</p>
-                                )}
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    {internship.skills && internship.skills.length > 0 && (
+                            {editIndex === index ? (
+                                <div className="p-6">
+                                    <input
+                                        type="text"
+                                        placeholder="Company name"
+                                        value={editInternship.company}
+                                        onChange={e => setEditInternship({ ...editInternship, company: e.target.value })}
+                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Position/Role"
+                                        value={editInternship.position}
+                                        onChange={e => setEditInternship({ ...editInternship, position: e.target.value })}
+                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Duration"
+                                        value={editInternship.duration}
+                                        onChange={e => setEditInternship({ ...editInternship, duration: e.target.value })}
+                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Location"
+                                        value={editInternship.location}
+                                        onChange={e => setEditInternship({ ...editInternship, location: e.target.value })}
+                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                    />
+                                    <textarea
+                                        placeholder="Description"
+                                        value={editInternship.description}
+                                        onChange={e => setEditInternship({ ...editInternship, description: e.target.value })}
+                                        rows={3}
+                                        className="w-full p-2 border border-gray-300 rounded mb-2 resize-none"
+                                    />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                         <div>
-                                            <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                <Award size={20} className="text-green-500" />
-                                                Skills Developed
-                                            </h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {internship.skills.map((skill, skillIndex) => (
-                                                    <span key={skillIndex} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                        {skill}
-                                                    </span>
-                                                ))}
-                                            </div>
+                                            <label className="block text-sm font-medium mb-2">Skills (one per line)</label>
+                                            <textarea
+                                                value={editInternship.skills.join('\n')}
+                                                onChange={e => setEditInternship({ ...editInternship, skills: e.target.value.split('\n') })}
+                                                rows={4}
+                                                className="w-full p-2 border border-gray-300 rounded resize-none"
+                                            />
                                         </div>
-                                    )}
-                                    
-                                    {internship.achievements && internship.achievements.length > 0 && (
                                         <div>
-                                            <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                <FileText size={20} className="text-violet-500" />
-                                                Key Achievements
-                                            </h4>
-                                            <ul className="space-y-2">
-                                                {internship.achievements.map((achievement, achievementIndex) => (
-                                                    <li key={achievementIndex} className="flex items-start gap-2">
-                                                        <span className="text-green-500 text-lg mt-0.5">✓</span>
-                                                        <span className="text-gray-700 text-sm">{achievement}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                            <label className="block text-sm font-medium mb-2">Achievements (one per line)</label>
+                                            <textarea
+                                                value={editInternship.achievements.join('\n')}
+                                                onChange={e => setEditInternship({ ...editInternship, achievements: e.target.value.split('\n') })}
+                                                rows={4}
+                                                className="w-full p-2 border border-gray-300 rounded resize-none"
+                                            />
                                         </div>
-                                    )}
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={saveEditInternship}
+                                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                                        >
+                                            Save
+                                        </button>
+                                        <button
+                                            onClick={cancelEditInternship}
+                                            className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <>
+                                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
+                                        <h3 className="text-2xl font-bold mb-2">{internship.position}</h3>
+                                        <p className="text-blue-100 text-lg font-semibold">{internship.company}</p>
+                                        <div className="flex items-center gap-4 mt-2 text-blue-200">
+                                            {internship.duration && (
+                                                <div className="flex items-center gap-1">
+                                                    <Calendar size={16} />
+                                                    <span>{internship.duration}</span>
+                                                </div>
+                                            )}
+                                            {internship.location && (
+                                                <div className="flex items-center gap-1">
+                                                    <MapPin size={16} />
+                                                    <span>{internship.location}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="p-6">
+                                        {internship.description && (
+                                            <p className="text-gray-700 text-lg mb-6 leading-relaxed">{internship.description}</p>
+                                        )}
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            {internship.skills && internship.skills.length > 0 && (
+                                                <div>
+                                                    <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                                        <Award size={20} className="text-green-500" />
+                                                        Skills Developed
+                                                    </h4>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {internship.skills.map((skill, skillIndex) => (
+                                                            <span key={skillIndex} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                                {skill}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {internship.achievements && internship.achievements.length > 0 && (
+                                                <div>
+                                                    <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                                                        <FileText size={20} className="text-violet-500" />
+                                                        Key Achievements
+                                                    </h4>
+                                                    <ul className="space-y-2">
+                                                        {internship.achievements.map((achievement, achievementIndex) => (
+                                                            <li key={achievementIndex} className="flex items-start gap-2">
+                                                                <span className="text-green-500 text-lg mt-0.5">✓</span>
+                                                                <span className="text-gray-700 text-sm">{achievement}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     ))}
                 </div>

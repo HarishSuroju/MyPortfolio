@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { getPortfolioData, updatePortfolioSection } from '../utils/dataManager';
 import { useAuth } from '../contexts/AuthContext';
 import { Plus, X } from 'lucide-react';
+// Import all icons from the icons folder (Vite/React way)
 import toast from 'react-hot-toast';
 
 const Skills = () => {
     const [skillsData, setSkillsData] = useState([]);
     const [isAddingSkill, setIsAddingSkill] = useState(false);
-    const [newSkill, setNewSkill] = useState({ name: '', level: 50, category: 'Frontend' });
+    const [newSkill, setNewSkill] = useState({ name: '', level: 50, category: 'Frontend', icon: '' });
     const [activeCategory, setActiveCategory] = useState('All');
+    const [editIndex, setEditIndex] = useState(null);
+    const [editSkill, setEditSkill] = useState({ name: '', level: 50, category: 'Frontend', icon: '' });
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
@@ -24,11 +27,37 @@ const Skills = () => {
         await updatePortfolioSection('skills', updatedSkills);
     };
 
+    const startEditSkill = (index) => {
+        setEditIndex(index);
+        setEditSkill({ ...skillsData[index] });
+    };
+
+    const cancelEditSkill = () => {
+        setEditIndex(null);
+        setEditSkill({ name: '', level: 50, category: 'Frontend', icon: '' });
+    };
+
+    const saveEditSkill = () => {
+        if (editSkill.name.trim()) {
+            const updatedSkills = [...skillsData];
+            updatedSkills[editIndex] = { ...editSkill };
+            updateSkillsData(updatedSkills);
+            setEditIndex(null);
+            setEditSkill({ name: '', level: 50, category: 'Frontend', icon: '' });
+            toast.success('Skill updated successfully!');
+        }
+    };
+
     const addSkill = () => {
         if (newSkill.name.trim()) {
-            const updatedSkills = [...skillsData, { ...newSkill, id: Date.now() }];
+            // If icon is not set, try to auto-assign based on name
+            let icon = newSkill.icon;
+            if (!icon && skillIcons[newSkill.name]) {
+                icon = skillIcons[newSkill.name];
+            }
+            const updatedSkills = [...skillsData, { ...newSkill, icon, id: Date.now() }];
             updateSkillsData(updatedSkills);
-            setNewSkill({ name: '', level: 50, category: 'Frontend' });
+            setNewSkill({ name: '', level: 50, category: 'Frontend', icon: '' });
             setIsAddingSkill(false);
             toast.success('Skill added successfully!');
         }
@@ -105,7 +134,7 @@ const Skills = () => {
                 {isAddingSkill && (
                     <div className="mb-8 p-6 bg-white rounded-lg shadow-lg">
                         <h3 className="text-lg font-semibold mb-4">Add New Skill</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <input
                                 type="text"
                                 placeholder="Skill name"
@@ -124,6 +153,7 @@ const Skills = () => {
                                 <option value="Mobile">Mobile</option>
                                 <option value="DevOps">DevOps</option>
                                 <option value="DSA">DSA</option>
+                                <option value="Programming">Programming</option>
                                 <option value="Other">Other</option>
                             </select>
                             <div className="flex items-center space-x-2">
@@ -137,6 +167,24 @@ const Skills = () => {
                                     className="flex-1"
                                 />
                                 <span className="text-sm w-8">{newSkill.level}%</span>
+                            </div>
+                            <div>
+                                <label className="block text-sm mb-1">Skill Image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={e => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = (ev) => {
+                                                setNewSkill(skill => ({ ...skill, icon: ev.target.result }));
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}
+                                    className="p-2 border border-gray-300 rounded w-full"
+                                />
                             </div>
                         </div>
                         <div className="flex space-x-2 mt-4">
@@ -175,47 +223,131 @@ const Skills = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {getFilteredSkills().map((skill, index) => (
-                        <div 
-                            key={index} 
+                        <div
+                            key={index}
                             className={`bg-white p-4 rounded-lg transform transition-all duration-300 hover:-translate-y-1 ${getCategoryGlowColor(skill.category)} hover:shadow-2xl relative group`}
                         >
-                            {isAuthenticated && (
-                                <button
-                                    onClick={() => removeSkill(index)}
-                                    className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                                    title="Remove skill"
-                                >
-                                    <X size={14} />
-                                </button>
+                            {isAuthenticated && editIndex !== index && (
+                                <>
+                                    <button
+                                        onClick={() => removeSkill(index)}
+                                        className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                                        title="Remove skill"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                    <button
+                                        onClick={() => startEditSkill(index)}
+                                        className="absolute top-1 right-8 bg-blue-500 hover:bg-blue-600 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                                        title="Edit skill"
+                                    >
+                                        ✎
+                                    </button>
+                                </>
                             )}
-                            
-                            <div className={`w-10 h-10 ${getCategoryColor(skill.category)} rounded-full flex items-center justify-center text-white font-bold mb-3 transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                                {skill.name.charAt(0).toUpperCase()}
-                            </div>
-                            
-                            <h3 className="text-md font-semibold mb-1 transform transition-transform duration-300 group-hover:translate-x-1">{skill.name}</h3>
-                            <p className="text-xs text-gray-500 mb-2 transform transition-transform duration-300 group-hover:translate-x-1">{skill.category}</p>
-                            
-                            <div className="w-full bg-gray-200 rounded-full h-1.5 mb-1 overflow-hidden">
-                                <div 
-                                    className={`${getCategoryColor(skill.category)} h-1.5 rounded-full transition-all duration-500 ease-out`}
-                                    style={{ width: `${skill.level}%` }}
-                                ></div>
-                            </div>
-                            
-                            <div className="flex justify-between items-center">
-                                <span className="text-xs font-medium transform transition-transform duration-300 group-hover:scale-110">{skill.level}%</span>
-                                {isAuthenticated && (
+                            {editIndex === index ? (
+                                <div>
                                     <input
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        value={skill.level}
-                                        onChange={(e) => updateSkillLevel(index, parseInt(e.target.value))}
-                                        className="w-16"
+                                        type="text"
+                                        value={editSkill.name}
+                                        onChange={e => setEditSkill({ ...editSkill, name: e.target.value })}
+                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                        placeholder="Skill name"
                                     />
-                                )}
-                            </div>
+                                    <select
+                                        value={editSkill.category}
+                                        onChange={e => setEditSkill({ ...editSkill, category: e.target.value })}
+                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                    >
+                                        <option value="Frontend">Frontend</option>
+                                        <option value="Backend">Backend</option>
+                                        <option value="Database">Database</option>
+                                        <option value="Mobile">Mobile</option>
+                                        <option value="DevOps">DevOps</option>
+                                        <option value="DSA">DSA</option>
+                                        <option value="Programming">Programming</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div className="flex items-center space-x-2 mb-2">
+                                        <span className="text-sm">Level:</span>
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            value={editSkill.level}
+                                            onChange={e => setEditSkill({ ...editSkill, level: parseInt(e.target.value) })}
+                                            className="flex-1"
+                                        />
+                                        <span className="text-sm w-8">{editSkill.level}%</span>
+                                    </div>
+                                    <div className="mb-2">
+                                        <label className="block text-sm mb-1">Skill Image</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={e => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = (ev) => {
+                                                        setEditSkill(skill => ({ ...skill, icon: ev.target.result }));
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
+                                            className="p-2 border border-gray-300 rounded w-full"
+                                        />
+                                        {editSkill.icon && (
+                                            <img src={editSkill.icon} alt="icon" className="w-7 h-7 object-contain mt-2" />
+                                        )}
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={saveEditSkill}
+                                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                                        >
+                                            Save
+                                        </button>
+                                        <button
+                                            onClick={cancelEditSkill}
+                                            className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className={`w-10 h-10 ${getCategoryColor(skill.category)} rounded-full flex items-center justify-center text-white font-bold mb-3 transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                                        {skill.icon ? (
+                                            <img src={skill.icon} alt={skill.name} className="w-7 h-7 object-contain" />
+                                        ) : (
+                                            skill.name.charAt(0).toUpperCase()
+                                        )}
+                                    </div>
+                                    <h3 className="text-md font-semibold mb-1 transform transition-transform duration-300 group-hover:translate-x-1">{skill.name}</h3>
+                                    <p className="text-xs text-gray-500 mb-2 transform transition-transform duration-300 group-hover:translate-x-1">{skill.category}</p>
+                                    <div className="w-full bg-gray-200 rounded-full h-1.5 mb-1 overflow-hidden">
+                                        <div
+                                            className={`${getCategoryColor(skill.category)} h-1.5 rounded-full transition-all duration-500 ease-out`}
+                                            style={{ width: `${skill.level}%` }}
+                                        ></div>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs font-medium transform transition-transform duration-300 group-hover:scale-110">{skill.level}%</span>
+                                        {isAuthenticated && (
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max="100"
+                                                value={skill.level}
+                                                onChange={(e) => updateSkillLevel(index, parseInt(e.target.value))}
+                                                className="w-16"
+                                            />
+                                        )}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     ))}
                 </div>

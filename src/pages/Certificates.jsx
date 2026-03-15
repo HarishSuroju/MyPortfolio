@@ -16,6 +16,8 @@ const Certificates = () => {
         description: '',
         credentialUrl: ''
     });
+    const [editIndex, setEditIndex] = useState(null);
+    const [editCertificate, setEditCertificate] = useState({ title: '', issuer: '', date: '', image: '', description: '', credentialUrl: '' });
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
@@ -81,6 +83,29 @@ const Certificates = () => {
             setImageFunction(imageDataUrl);
         } catch (error) {
             toast.error(error.message);
+        }
+    };
+
+    const startEditCertificate = (index) => {
+        setEditIndex(index);
+        setEditCertificate({ ...certificatesData[index] });
+    };
+
+    const cancelEditCertificate = () => {
+        setEditIndex(null);
+        setEditCertificate({ title: '', issuer: '', date: '', image: '', description: '', credentialUrl: '' });
+    };
+
+    const saveEditCertificate = () => {
+        if (editCertificate.title.trim() && editCertificate.issuer.trim()) {
+            const updatedCertificates = [...certificatesData];
+            updatedCertificates[editIndex] = { ...editCertificate };
+            updateCertificatesData(updatedCertificates);
+            setEditIndex(null);
+            setEditCertificate({ title: '', issuer: '', date: '', image: '', description: '', credentialUrl: '' });
+            toast.success('Certificate updated successfully!');
+        } else {
+            toast.error('Please fill in title and issuer');
         }
     };
 
@@ -190,7 +215,7 @@ const Certificates = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                     {certificatesData.map((certificate, index) => (
                         <div key={certificate.id || index} className="bg-white rounded-xl shadow-lg p-4 transform transition-transform hover:scale-105 relative group">
-                            {isAuthenticated && (
+                            {isAuthenticated && editIndex !== index && (
                                 <div className="absolute top-2 right-2 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
                                     <button
                                         onClick={() => removeCertificate(index)}
@@ -199,53 +224,132 @@ const Certificates = () => {
                                     >
                                         <X size={14} />
                                     </button>
+                                    <button
+                                        onClick={() => startEditCertificate(index)}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded"
+                                        title="Edit certificate"
+                                    >
+                                        <Edit size={14} />
+                                    </button>
                                 </div>
                             )}
-                            
-                            <div className="mb-4">
-                                {certificate.image ? (
-                                    <img 
-                                        src={certificate.image} 
-                                        alt={certificate.title} 
-                                        className="w-full h-36 object-cover rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:opacity-90"
-                                        onClick={() => setSelectedCertificate(certificate)}
+                            {editIndex === index ? (
+                                <div>
+                                    <input
+                                        type="text"
+                                        placeholder="Certificate title"
+                                        value={editCertificate.title}
+                                        onChange={e => setEditCertificate({ ...editCertificate, title: e.target.value })}
+                                        className="w-full p-2 border border-gray-300 rounded mb-2"
                                     />
-                                ) : (
-                                    <div className="w-full h-36 bg-gray-200 rounded-lg flex items-center justify-center">
-                                        <Award size={36} className="text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Issuing organization"
+                                        value={editCertificate.issuer}
+                                        onChange={e => setEditCertificate({ ...editCertificate, issuer: e.target.value })}
+                                        className="w-full p-2 border border-gray-300 rounded mb-2"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Date (e.g., 2023)"
+                                        value={editCertificate.date}
+                                        onChange={e => setEditCertificate({ ...editCertificate, date: e.target.value })}
+                                        className="w-full p-2 border border-gray-300 rounded mb-2"
+                                    />
+                                    <textarea
+                                        placeholder="Description"
+                                        value={editCertificate.description}
+                                        onChange={e => setEditCertificate({ ...editCertificate, description: e.target.value })}
+                                        rows={3}
+                                        className="w-full p-2 border border-gray-300 rounded mb-2 resize-none"
+                                    />
+                                    <div className="mb-2">
+                                        <label className="block text-sm font-medium mb-2">Certificate Image</label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={e => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = (ev) => {
+                                                        setEditCertificate(cert => ({ ...cert, image: ev.target.result }));
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}
+                                            className="w-full p-2 border border-gray-300 rounded"
+                                        />
+                                        {editCertificate.image && (
+                                            <img src={editCertificate.image} alt="Preview" className="mt-2 w-32 h-20 object-cover rounded" />
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                            
-                            <h3 className="text-lg font-bold mb-1">{certificate.title}</h3>
-                            <p className="text-gray-700 text-sm mb-1">Issued by {certificate.issuer}</p>
-                            {certificate.date && (
-                                <p className="text-gray-600 text-xs mb-2">{certificate.date}</p>
+                                    <input
+                                        type="url"
+                                        placeholder="Credential URL (optional)"
+                                        value={editCertificate.credentialUrl}
+                                        onChange={e => setEditCertificate({ ...editCertificate, credentialUrl: e.target.value })}
+                                        className="w-full p-2 border border-gray-300 rounded mb-2"
+                                    />
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={saveEditCertificate}
+                                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                                        >
+                                            Save
+                                        </button>
+                                        <button
+                                            onClick={cancelEditCertificate}
+                                            className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div>
+                                    {certificate.image ? (
+                                        <img 
+                                            src={certificate.image} 
+                                            alt={certificate.title} 
+                                            className="w-full h-36 object-cover rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:opacity-90"
+                                            onClick={() => setSelectedCertificate(certificate)}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-36 bg-gray-200 rounded-lg flex items-center justify-center">
+                                            <Award size={36} className="text-gray-400" />
+                                        </div>
+                                    )}
+                                    <h3 className="text-lg font-bold mb-1">{certificate.title}</h3>
+                                    <p className="text-gray-700 text-sm mb-1">Issued by {certificate.issuer}</p>
+                                    {certificate.date && (
+                                        <p className="text-gray-600 text-xs mb-2">{certificate.date}</p>
+                                    )}
+                                    {certificate.description && (
+                                        <p className="text-gray-600 text-xs mb-3 line-clamp-2">{certificate.description}</p>
+                                    )}
+                                    <div className="flex space-x-2">
+                                        <button 
+                                            onClick={() => setSelectedCertificate(certificate)}
+                                            className="inline-flex items-center text-violet-600 hover:text-violet-700 text-sm font-semibold"
+                                        >
+                                            <Eye size={14} className="mr-1" />
+                                            View
+                                        </button>
+                                        {certificate.credentialUrl && (
+                                            <a
+                                                href={certificate.credentialUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-semibold"
+                                            >
+                                                <Award size={14} className="mr-1" />
+                                                Verify
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
                             )}
-                            {certificate.description && (
-                                <p className="text-gray-600 text-xs mb-3 line-clamp-2">{certificate.description}</p>
-                            )}
-                            
-                            <div className="flex space-x-2">
-                                <button 
-                                    onClick={() => setSelectedCertificate(certificate)}
-                                    className="inline-flex items-center text-violet-600 hover:text-violet-700 text-sm font-semibold"
-                                >
-                                    <Eye size={14} className="mr-1" />
-                                    View
-                                </button>
-                                {certificate.credentialUrl && (
-                                    <a
-                                        href={certificate.credentialUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-semibold"
-                                    >
-                                        <Award size={14} className="mr-1" />
-                                        Verify
-                                    </a>
-                                )}
-                            </div>
                         </div>
                     ))}
                 </div>

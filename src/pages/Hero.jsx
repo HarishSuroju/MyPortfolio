@@ -19,6 +19,23 @@ const Hero = () => {
         await updatePortfolioSection('hero', updatedHero);
     };
 
+    // --- Editable Skills for Hero Section ---
+    const [newSkill, setNewSkill] = useState('');
+    const isAuthenticated = true; // Replace with your actual auth logic if needed
+
+    const addHeroSkill = async () => {
+        if (!newSkill.trim()) return;
+        const updatedSkills = [...(heroData.skills || []), newSkill.trim()];
+        await updateHeroData('skills', updatedSkills);
+        setNewSkill('');
+    };
+
+    const removeHeroSkill = async (index) => {
+        const updatedSkills = [...(heroData.skills || [])];
+        updatedSkills.splice(index, 1);
+        await updateHeroData('skills', updatedSkills);
+    };
+
     if (!heroData) return <div>Loading...</div>;
 
     return (
@@ -72,7 +89,38 @@ const Hero = () => {
                         {heroData.title}
                     </p>
                 </EditableContent>
-                
+
+                {/* Editable Skills Chips */}
+                <div className="mb-8">
+                    <div className="flex flex-wrap gap-3 justify-center">
+                        {(heroData.skills || []).map((skill, idx) => (
+                            <span key={idx} className="bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-md font-medium flex items-center">
+                                {skill}
+                                {isAuthenticated && (
+                                    <button onClick={() => removeHeroSkill(idx)} className="ml-2 text-violet-500 hover:text-red-500 font-bold">&times;</button>
+                                )}
+                            </span>
+                        ))}
+                    </div>
+                    {isAuthenticated && (
+                        <div className="flex justify-center mt-4 gap-2">
+                            <input
+                                type="text"
+                                value={newSkill}
+                                onChange={e => setNewSkill(e.target.value)}
+                                placeholder="Add a skill for hero section"
+                                className="p-2 border border-violet-300 rounded"
+                            />
+                            <button
+                                onClick={addHeroSkill}
+                                className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded"
+                            >
+                                Add
+                            </button>
+                        </div>
+                    )}
+                </div>
+
                 <div className="mt-8">
                     <a href="#contact" className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105">
                         Get In Touch
