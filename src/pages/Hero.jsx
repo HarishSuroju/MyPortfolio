@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getPortfolioData, updatePortfolioSection } from '../utils/dataManager';
 import EditableContent from '../components/EditableContent';
+import { useAuth } from '../contexts/AuthContext';
 
 const Hero = () => {
     const [heroData, setHeroData] = useState(null);
@@ -21,7 +22,7 @@ const Hero = () => {
 
     // --- Editable Skills for Hero Section ---
     const [newSkill, setNewSkill] = useState('');
-    const isAuthenticated = true; // Replace with your actual auth logic if needed
+    const { isAuthenticated } = useAuth();
 
     const addHeroSkill = async () => {
         if (!newSkill.trim()) return;
