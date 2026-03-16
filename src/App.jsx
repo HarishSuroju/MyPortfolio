@@ -51,19 +51,34 @@ function App() {
     useEffect(() => {
         if (starfieldRef.current) buildStarfield(starfieldRef.current);
 
-        // Intersection Observer for scroll animations
-        const sections = document.querySelectorAll('.section');
-        const observer = new IntersectionObserver((entries, obs) => {
+        // Intersection Observer for scroll-in animations
+        const io = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
                     obs.unobserve(entry.target);
                 }
             });
-        }, { root: null, threshold: 0.15 });
-        sections.forEach(s => observer.observe(s));
+        }, { root: null, threshold: 0.1 });
 
-        return () => observer.disconnect();
+        const observeSection = (node) => {
+            if (node.nodeType !== 1) return;
+            if (node.classList.contains('section') && !node.classList.contains('is-visible')) {
+                io.observe(node);
+            }
+            node.querySelectorAll('.section:not(.is-visible)').forEach(s => io.observe(s));
+        };
+
+        // Observe sections already in the DOM
+        document.querySelectorAll('.section').forEach(s => io.observe(s));
+
+        // Watch for async-loaded sections added later
+        const mo = new MutationObserver((mutations) => {
+            mutations.forEach(m => m.addedNodes.forEach(n => observeSection(n)));
+        });
+        mo.observe(document.body, { childList: true, subtree: true });
+
+        return () => { io.disconnect(); mo.disconnect(); };
     }, []);
 
     return (
