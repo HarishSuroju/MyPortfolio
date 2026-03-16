@@ -107,14 +107,15 @@ const Projects = () => {
 
         if (isEditing) {
             return (
-                <div className="bg-gray-100 rounded-xl shadow-lg overflow-hidden p-6">
+                <div className="space-card rounded-xl shadow-lg overflow-hidden p-6">
                     <div className="space-y-4">
                         <input
                             type="text"
                             value={editData.title}
                             onChange={(e) => setEditData({ ...editData, title: e.target.value })}
                             placeholder="Project title"
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 rounded text-sm"
+                            style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                         />
                         
                         <textarea
@@ -122,19 +123,21 @@ const Projects = () => {
                             onChange={(e) => setEditData({ ...editData, description: e.target.value })}
                             placeholder="Project description"
                             rows={4}
-                            className="w-full p-2 border border-gray-300 rounded resize-none"
+                            className="w-full p-2 rounded resize-none text-sm"
+                            style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                         />
                         
                         <div>
-                            <label className="block text-sm font-medium mb-2">Project Image</label>
+                            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Project Image</label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={(e) => handleImageChange(e.target.files[0], (img) => setEditData({ ...editData, image: img }))}
-                                className="w-full p-2 border border-gray-300 rounded"
+                                className="w-full p-2 rounded text-sm"
+                                style={{ background: 'rgba(96,165,250,0.05)', border: '1px solid rgba(96,165,250,0.2)', color: 'var(--text-secondary)' }}
                             />
                             {editData.image && (
-                                <img src={editData.image} alt="Preview" className="mt-2 w-32 h-20 object-cover rounded" />
+                                <img src={editData.image} alt="Preview" className="mt-2 w-32 h-20 object-cover rounded" style={{ border: '1px solid rgba(96,165,250,0.3)' }} />
                             )}
                         </div>
                         
@@ -143,7 +146,8 @@ const Projects = () => {
                             value={editData.technologies.join(', ')}
                             onChange={(e) => handleTechnologiesChange(e.target.value, setEditData, editData)}
                             placeholder="Technologies (comma separated)"
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 rounded text-sm"
+                            style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                         />
                         
                         <input
@@ -151,7 +155,8 @@ const Projects = () => {
                             value={editData.githubUrl}
                             onChange={(e) => setEditData({ ...editData, githubUrl: e.target.value })}
                             placeholder="GitHub URL"
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 rounded text-sm"
+                            style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                         />
                         
                         <input
@@ -159,30 +164,25 @@ const Projects = () => {
                             value={editData.liveUrl}
                             onChange={(e) => setEditData({ ...editData, liveUrl: e.target.value })}
                             placeholder="Live demo URL"
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 rounded text-sm"
+                            style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                         />
 
-                        <label className="inline-flex items-center gap-2 text-sm text-gray-700">
+                        <label className="inline-flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
                             <input
                                 type="checkbox"
                                 checked={Boolean(editData.inProgress)}
                                 onChange={(e) => setEditData({ ...editData, inProgress: e.target.checked })}
-                                className="h-4 w-4 accent-violet-600"
+                                className="h-4 w-4"
                             />
                             Mark as In Progress
                         </label>
                         
                         <div className="flex space-x-2">
-                            <button
-                                onClick={handleSave}
-                                className="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
-                            >
+                            <button onClick={handleSave} className="p-2 rounded" style={{ background: 'rgba(52,211,153,0.2)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>
                                 <Save size={16} />
                             </button>
-                            <button
-                                onClick={handleCancel}
-                                className="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded"
-                            >
+                            <button onClick={handleCancel} className="p-2 rounded" style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.3)', color: 'var(--text-secondary)' }}>
                                 <X size={16} />
                             </button>
                         </div>
@@ -192,44 +192,45 @@ const Projects = () => {
         }
 
         return (
-            <div className="bg-gray-100 rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105 relative group">
+            <div className="space-card rounded-xl overflow-hidden relative group transition-all duration-300"
+                style={{ cursor: 'default' }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 30px rgba(96,165,250,0.25), 0 0 60px rgba(167,139,250,0.1)'}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
+            >
                 {isAuthenticated && (
                     <div className="absolute top-2 right-2 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded"
-                            title="Edit project"
-                        >
+                        <button onClick={() => setIsEditing(true)} className="p-1 rounded" style={{ background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }} title="Edit project">
                             <Edit size={16} />
                         </button>
-                        <button
-                            onClick={() => removeProject(index)}
-                            className="bg-red-500 hover:bg-red-600 text-white p-1 rounded"
-                            title="Remove project"
-                        >
+                        <button onClick={() => removeProject(index)} className="p-1 rounded" style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.4)', color: '#f87171' }} title="Remove project">
                             <X size={16} />
                         </button>
                     </div>
                 )}
                 
                 {project.image && (
-                    <img src={project.image} alt={project.title} className="w-full h-48 object-cover transition-all duration-300 hover:scale-110 hover:opacity-90" />
+                    <div className="overflow-hidden" style={{ height: '180px' }}>
+                        <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" style={{ opacity: 0.85 }} />
+                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '180px', background: 'linear-gradient(to bottom, transparent 60%, rgba(15,15,40,0.95))' }} />
+                    </div>
                 )}
 
                 {project.inProgress && (
-                    <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-semibold px-3 py-1 rounded-full z-10">
-                        In Progress
+                    <span className="absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full z-10"
+                        style={{ background: 'rgba(251,191,36,0.2)', border: '1px solid rgba(251,191,36,0.5)', color: '#fbbf24' }}>
+                        ⚡ In Progress
                     </span>
                 )}
                 
                 <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                    <p className="text-gray-700 mb-4">{project.description}</p>
+                    <h3 className="text-lg font-bold mb-2" style={{ color: 'var(--text-primary)' }}>🪐 {project.title}</h3>
+                    <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>{project.description}</p>
                     
                     {project.technologies && project.technologies.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex flex-wrap gap-1 mb-4">
                             {project.technologies.map((tech, techIndex) => (
-                                <span key={techIndex} className="bg-violet-100 text-violet-800 px-2 py-1 rounded-full text-xs">
+                                <span key={techIndex} className="px-2 py-0.5 rounded-full text-xs"
+                                    style={{ background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.25)', color: 'var(--neon-purple)' }}>
                                     {tech}
                                 </span>
                             ))}
@@ -238,25 +239,23 @@ const Projects = () => {
                     
                     <div className="flex space-x-2">
                         {project.githubUrl && (
-                            <a
-                                href={project.githubUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center bg-gray-800 text-white py-2 px-4 rounded-full text-sm hover:bg-gray-700 transition-colors duration-300"
+                            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
+                                className="inline-flex items-center py-1.5 px-3 rounded-full text-xs transition-all duration-200"
+                                style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}
+                                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--neon-blue)'}
+                                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(148,163,184,0.25)'}
                             >
-                                <Github size={16} className="mr-1" />
-                                Code
+                                <Github size={14} className="mr-1" />Code
                             </a>
                         )}
                         {project.liveUrl && (
-                            <a
-                                href={project.liveUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center bg-violet-500 text-white py-2 px-4 rounded-full text-sm hover:bg-violet-600 transition-colors duration-300"
+                            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+                                className="inline-flex items-center py-1.5 px-3 rounded-full text-xs transition-all duration-200"
+                                style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--neon-blue)' }}
+                                onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 12px rgba(96,165,250,0.3)'}
+                                onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
                             >
-                                <ExternalLink size={16} className="mr-1" />
-                                Live Demo
+                                <ExternalLink size={14} className="mr-1" />Launch
                             </a>
                         )}
                     </div>
@@ -266,14 +265,17 @@ const Projects = () => {
     };
 
     return (
-        <section id="projects" className="section py-20 px-6 bg-white">
+        <section id="projects" className="section nebula-section py-20 px-6">
             <div className="container mx-auto">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
-                    <h2 className="text-3xl font-bold text-center flex-1 sm:text-left">My Projects</h2>
+                    <div>
+                        <h2 className="text-3xl font-bold cosmic-text">Star Systems</h2>
+                        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)', letterSpacing: '0.1em' }}>— MY PROJECTS —</p>
+                    </div>
                     {isAuthenticated && (
-                        <button
-                            onClick={() => setIsAddingProject(true)}
-                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full self-center sm:self-auto"
+                        <button onClick={() => setIsAddingProject(true)}
+                            className="p-2 rounded-full self-center sm:self-auto transition-all"
+                            style={{ background: 'rgba(96,165,250,0.15)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}
                             title="Add Project"
                         >
                             <Plus size={20} />
@@ -282,84 +284,61 @@ const Projects = () => {
                 </div>
 
                 {isAddingProject && (
-                    <div className="mb-8 p-6 bg-white border-2 border-violet-200 rounded-lg shadow-lg">
-                        <h3 className="text-lg font-semibold mb-4">Add New Project</h3>
+                    <div className="mb-8 p-6 space-card rounded-lg shadow-lg">
+                        <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--neon-cyan)' }}>🛸 Add New Star System</h3>
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    placeholder="Project title"
-                                    value={newProject.title}
+                                <input type="text" placeholder="Project title" value={newProject.title}
                                     onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                 />
-                                <input
-                                    type="file"
-                                    accept="image/*"
+                                <input type="file" accept="image/*"
                                     onChange={(e) => handleImageChange(e.target.files[0], (img) => setNewProject({ ...newProject, image: img }))}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.05)', border: '1px solid rgba(96,165,250,0.2)', color: 'var(--text-secondary)' }}
                                 />
                             </div>
-                            
-                            <textarea
-                                placeholder="Project description"
-                                value={newProject.description}
+                            <textarea placeholder="Project description" value={newProject.description}
                                 onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                                rows={4}
-                                className="w-full p-2 border border-gray-300 rounded resize-none"
+                                rows={4} className="w-full p-2 rounded resize-none text-sm"
+                                style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                             />
-                            
-                            <input
-                                type="text"
-                                placeholder="Technologies used (comma separated)"
-                                value={newProject.technologies.join(', ')}
+                            <input type="text" placeholder="Technologies used (comma separated)" value={newProject.technologies.join(', ')}
                                 onChange={(e) => handleTechnologiesChange(e.target.value, setNewProject, newProject)}
-                                className="w-full p-2 border border-gray-300 rounded"
+                                className="w-full p-2 rounded text-sm"
+                                style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                             />
-                            
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input
-                                    type="url"
-                                    placeholder="GitHub URL"
-                                    value={newProject.githubUrl}
+                                <input type="url" placeholder="GitHub URL" value={newProject.githubUrl}
                                     onChange={(e) => setNewProject({ ...newProject, githubUrl: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                 />
-                                <input
-                                    type="url"
-                                    placeholder="Live demo URL"
-                                    value={newProject.liveUrl}
+                                <input type="url" placeholder="Live demo URL" value={newProject.liveUrl}
                                     onChange={(e) => setNewProject({ ...newProject, liveUrl: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                 />
                             </div>
-
-                            <label className="inline-flex items-center gap-2 text-sm text-gray-700">
-                                <input
-                                    type="checkbox"
-                                    checked={Boolean(newProject.inProgress)}
+                            <label className="inline-flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                                <input type="checkbox" checked={Boolean(newProject.inProgress)}
                                     onChange={(e) => setNewProject({ ...newProject, inProgress: e.target.checked })}
-                                    className="h-4 w-4 accent-violet-600"
+                                    className="h-4 w-4"
                                 />
                                 Mark as In Progress
                             </label>
-                            
                             {newProject.image && (
-                                <img src={newProject.image} alt="Preview" className="w-32 h-20 object-cover rounded" />
+                                <img src={newProject.image} alt="Preview" className="w-32 h-20 object-cover rounded" style={{ border: '1px solid rgba(96,165,250,0.3)' }} />
                             )}
                         </div>
-                        
                         <div className="flex space-x-2 mt-4">
-                            <button
-                                onClick={addProject}
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                            >
-                                Add Project
+                            <button onClick={addProject} className="px-4 py-2 rounded text-sm font-medium"
+                                style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>
+                                Launch Project
                             </button>
-                            <button
-                                onClick={() => setIsAddingProject(false)}
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                            >
+                            <button onClick={() => setIsAddingProject(false)} className="px-4 py-2 rounded text-sm"
+                                style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}>
                                 Cancel
                             </button>
                         </div>
@@ -374,13 +353,12 @@ const Projects = () => {
 
                 {projectsData.length === 0 && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">No projects added yet.</p>
+                        <p className="text-lg mb-4" style={{ color: 'var(--text-secondary)' }}>🌌 No star systems charted yet.</p>
                         {isAuthenticated && (
-                            <button
-                                onClick={() => setIsAddingProject(true)}
-                                className="mt-4 bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-lg"
-                            >
-                                Add Your First Project
+                            <button onClick={() => setIsAddingProject(true)}
+                                className="px-6 py-2 rounded-lg text-sm font-medium"
+                                style={{ background: 'rgba(96,165,250,0.15)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}>
+                                Chart Your First Project
                             </button>
                         )}
                     </div>

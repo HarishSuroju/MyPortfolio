@@ -1,1 +1,171 @@
 @import "tailwindcss";
+
+/* ============================================================
+   SPACE THEME - GLOBAL STYLES & ANIMATIONS
+   ============================================================ */
+
+:root {
+  --space-bg: #050510;
+  --space-deep: #0a0a2e;
+  --space-card: rgba(15, 15, 40, 0.85);
+  --space-border: rgba(96, 165, 250, 0.2);
+  --neon-blue: #60a5fa;
+  --neon-purple: #a78bfa;
+  --neon-cyan: #22d3ee;
+  --neon-pink: #f472b6;
+  --neon-green: #34d399;
+  --star-color: #ffffff;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--space-bg); }
+::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 3px; }
+
+/* Section fade-in animation */
+.section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Starfield ---- */
+#starfield {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+/* Shooting star */
+.shooting-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: linear-gradient(90deg, white, transparent);
+  border-radius: 50%;
+  animation: shoot var(--sdur, 2s) linear infinite var(--sdelay, 0s);
+}
+
+@keyframes shoot {
+  0% { transform: translateX(0) translateY(0) rotate(315deg); opacity: 1; width: 2px; }
+  100% { transform: translateX(300px) translateY(300px) rotate(315deg); opacity: 0; width: 80px; }
+}
+
+/* ---- Glow effects ---- */
+.glow-blue  { text-shadow: 0 0 20px var(--neon-blue),  0 0 40px var(--neon-blue); }
+.glow-purple{ text-shadow: 0 0 20px var(--neon-purple), 0 0 40px var(--neon-purple); }
+.glow-cyan  { text-shadow: 0 0 20px var(--neon-cyan),  0 0 40px var(--neon-cyan); }
+
+.glow-border-blue   { box-shadow: 0 0 15px rgba(96,165,250,0.4),  inset 0 0 15px rgba(96,165,250,0.05); }
+.glow-border-purple { box-shadow: 0 0 15px rgba(167,139,250,0.4), inset 0 0 15px rgba(167,139,250,0.05); }
+
+/* ---- Glassmorphism card ---- */
+.space-card {
+  background: var(--space-card);
+  border: 1px solid var(--space-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ---- Orbit animation ---- */
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+}
+.orbit-dot {
+  animation: orbit 4s linear infinite;
+  position: absolute;
+}
+
+/* ---- Planet pulse ---- */
+@keyframes planet-pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--neon-blue), 0 0 40px rgba(96,165,250,0.3); }
+  50%       { box-shadow: 0 0 35px var(--neon-purple), 0 0 70px rgba(167,139,250,0.4); }
+}
+.planet-pulse { animation: planet-pulse 3s ease-in-out infinite; }
+
+/* ---- Cosmic gradient text ---- */
+.cosmic-text {
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---- Nebula background section ---- */
+.nebula-section {
+  position: relative;
+  background: var(--space-deep);
+}
+.nebula-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 20% 50%, rgba(167,139,250,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 20%, rgba(96,165,250,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ---- Typing cursor ---- */
+.typing-effect {
+  border-right: 2px solid var(--neon-cyan);
+  animation: blink 0.7s step-end infinite;
+}
+@keyframes blink { 50% { border-color: transparent; } }
+
+/* ---- Radio wave animation (Contact) ---- */
+@keyframes radio-wave {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.radio-wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--neon-cyan);
+  animation: radio-wave 2s ease-out infinite;
+}
+.radio-wave:nth-child(2) { animation-delay: 0.5s; }
+.radio-wave:nth-child(3) { animation-delay: 1s; }
+
+/* ---- Skill progress bar ---- */
+.skill-bar-fill {
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  box-shadow: 0 0 8px var(--neon-blue);
+  transition: width 1s ease;
+}
+
+/* ---- Constellation line ---- */
+.constellation-line {
+  position: relative;
+}
+.constellation-line::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -24px;
+  width: 1px;
+  height: 24px;
+  background: linear-gradient(to bottom, var(--neon-blue), transparent);
+}

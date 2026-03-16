@@ -94,19 +94,18 @@ const Internships = () => {
     };
 
     return (
-        <section id="internships" className="section py-20 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <section id="internships" className="section nebula-section py-20">
             <div className="container mx-auto px-6">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
                     <div className="text-center flex-1 sm:text-left">
-                        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Professional Internships</h2>
-                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                            Practical experience gained through internships and professional development
-                        </p>
+                        <h2 className="text-3xl sm:text-4xl font-bold cosmic-text mb-2">Mission Log</h2>
+                        <p className="text-sm" style={{ color: 'var(--text-secondary)', letterSpacing: '0.1em' }}>— PROFESSIONAL INTERNSHIPS —</p>
                     </div>
                     {isAuthenticated && (
                         <button
                             onClick={() => setIsAddingInternship(true)}
-                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full self-center sm:self-auto sm:ml-4"
+                            className="p-2 rounded-full self-center sm:self-auto sm:ml-4 transition-all"
+                            style={{ background: 'rgba(96,165,250,0.15)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}
                             title="Add Internship"
                         >
                             <Plus size={20} />
@@ -115,86 +114,68 @@ const Internships = () => {
                 </div>
 
                 {isAddingInternship && (
-                    <div className="mb-8 p-6 bg-white border-2 border-violet-200 rounded-lg shadow-lg">
-                        <h3 className="text-lg font-semibold mb-4">Add New Internship</h3>
+                    <div className="mb-8 p-6 space-card rounded-lg shadow-lg">
+                        <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--neon-cyan)' }}>🚀 Log New Mission</h3>
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    placeholder="Company name"
-                                    value={newInternship.company}
+                                <input type="text" placeholder="Company name" value={newInternship.company}
                                     onChange={(e) => setNewInternship({ ...newInternship, company: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                 />
-                                <input
-                                    type="text"
-                                    placeholder="Position/Role"
-                                    value={newInternship.position}
+                                <input type="text" placeholder="Position/Role" value={newInternship.position}
                                     onChange={(e) => setNewInternship({ ...newInternship, position: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                 />
                             </div>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    placeholder="Duration (e.g., Jun 2023 - Aug 2023)"
-                                    value={newInternship.duration}
+                                <input type="text" placeholder="Duration (e.g., Jun 2023 - Aug 2023)" value={newInternship.duration}
                                     onChange={(e) => setNewInternship({ ...newInternship, duration: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                 />
-                                <input
-                                    type="text"
-                                    placeholder="Location"
-                                    value={newInternship.location}
+                                <input type="text" placeholder="Location" value={newInternship.location}
                                     onChange={(e) => setNewInternship({ ...newInternship, location: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                 />
                             </div>
                             
-                            <textarea
-                                placeholder="Description of your role and responsibilities"
-                                value={newInternship.description}
+                            <textarea placeholder="Description of your role and responsibilities" value={newInternship.description}
                                 onChange={(e) => setNewInternship({ ...newInternship, description: e.target.value })}
-                                rows={4}
-                                className="w-full p-2 border border-gray-300 rounded resize-none"
+                                rows={4} className="w-full p-2 rounded resize-none text-sm"
+                                style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                             />
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Skills (one per line)</label>
-                                    <textarea
-                                        placeholder={'React\nNode.js\nPostgreSQL\nTailwind CSS'}
-                                        value={newInternship.skills.join('\n')}
+                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Skills (one per line)</label>
+                                    <textarea placeholder={'React\nNode.js\nPostgreSQL'} value={newInternship.skills.join('\n')}
                                         onChange={(e) => handleArrayFieldChange(e.target.value, setNewInternship, newInternship, 'skills')}
-                                        rows={4}
-                                        className="w-full p-2 border border-gray-300 rounded resize-none"
+                                        rows={4} className="w-full p-2 rounded resize-none text-sm"
+                                        style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Achievements (one per line)</label>
-                                    <textarea
-                                        placeholder={'Delivered 2 major projects\nReceived positive feedback\nImproved performance by 30%'}
-                                        value={newInternship.achievements.join('\n')}
+                                    <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Achievements (one per line)</label>
+                                    <textarea placeholder={'Delivered 2 projects\nImproved performance by 30%'} value={newInternship.achievements.join('\n')}
                                         onChange={(e) => handleArrayFieldChange(e.target.value, setNewInternship, newInternship, 'achievements')}
-                                        rows={4}
-                                        className="w-full p-2 border border-gray-300 rounded resize-none"
+                                        rows={4} className="w-full p-2 rounded resize-none text-sm"
+                                        style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                     />
                                 </div>
                             </div>
                         </div>
                         
                         <div className="flex space-x-2 mt-4">
-                            <button
-                                onClick={addInternship}
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                            >
-                                Add Internship
+                            <button onClick={addInternship} className="px-4 py-2 rounded text-sm"
+                                style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>
+                                Add Mission
                             </button>
-                            <button
-                                onClick={() => setIsAddingInternship(false)}
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                            >
+                            <button onClick={() => setIsAddingInternship(false)} className="px-4 py-2 rounded text-sm"
+                                style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}>
                                 Cancel
                             </button>
                         </div>
@@ -203,112 +184,97 @@ const Internships = () => {
 
                 <div className="grid gap-8 md:gap-12">
                     {internshipsData.map((internship, index) => (
-                        <div key={internship.id || index} className="bg-white rounded-2xl shadow-xl overflow-hidden relative group">
+                        <div key={internship.id || index} className="space-card rounded-2xl overflow-hidden relative group transition-all duration-300"
+                            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 30px rgba(96,165,250,0.2)'}
+                            onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
+                        >
                             {isAuthenticated && editIndex !== index && (
                                 <div className="absolute top-4 right-4 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
-                                    <button
-                                        onClick={() => removeInternship(index)}
-                                        className="bg-red-500 hover:bg-red-600 text-white p-2 rounded"
-                                        title="Remove internship"
-                                    >
+                                    <button onClick={() => removeInternship(index)}
+                                        className="p-2 rounded" title="Remove internship"
+                                        style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.4)', color: '#f87171' }}>
                                         <X size={16} />
                                     </button>
-                                    <button
-                                        onClick={() => startEditInternship(index)}
-                                        className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
-                                        title="Edit internship"
-                                    >
+                                    <button onClick={() => startEditInternship(index)}
+                                        className="p-2 rounded" title="Edit internship"
+                                        style={{ background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}>
                                         <Edit size={16} />
                                     </button>
                                 </div>
                             )}
                             {editIndex === index ? (
                                 <div className="p-6">
-                                    <input
-                                        type="text"
-                                        placeholder="Company name"
-                                        value={editInternship.company}
+                                    <input type="text" placeholder="Company name" value={editInternship.company}
                                         onChange={e => setEditInternship({ ...editInternship, company: e.target.value })}
-                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                        className="p-2 rounded w-full mb-2 text-sm"
+                                        style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                     />
                                     <input
                                         type="text"
                                         placeholder="Position/Role"
                                         value={editInternship.position}
                                         onChange={e => setEditInternship({ ...editInternship, position: e.target.value })}
-                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                        className="p-2 rounded w-full mb-2 text-sm"
+                                        style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                     />
-                                    <input
-                                        type="text"
-                                        placeholder="Duration"
-                                        value={editInternship.duration}
+                                    <input type="text" placeholder="Duration" value={editInternship.duration}
                                         onChange={e => setEditInternship({ ...editInternship, duration: e.target.value })}
-                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                        className="p-2 rounded w-full mb-2 text-sm"
+                                        style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                     />
-                                    <input
-                                        type="text"
-                                        placeholder="Location"
-                                        value={editInternship.location}
+                                    <input type="text" placeholder="Location" value={editInternship.location}
                                         onChange={e => setEditInternship({ ...editInternship, location: e.target.value })}
-                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                        className="p-2 rounded w-full mb-2 text-sm"
+                                        style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                     />
-                                    <textarea
-                                        placeholder="Description"
-                                        value={editInternship.description}
+                                    <textarea placeholder="Description" value={editInternship.description}
                                         onChange={e => setEditInternship({ ...editInternship, description: e.target.value })}
-                                        rows={3}
-                                        className="w-full p-2 border border-gray-300 rounded mb-2 resize-none"
+                                        rows={3} className="w-full p-2 rounded mb-2 resize-none text-sm"
+                                        style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                     />
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                         <div>
-                                            <label className="block text-sm font-medium mb-2">Skills (one per line)</label>
-                                            <textarea
-                                                value={editInternship.skills.join('\n')}
+                                            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Skills (one per line)</label>
+                                            <textarea value={editInternship.skills.join('\n')}
                                                 onChange={e => setEditInternship({ ...editInternship, skills: e.target.value.split('\n') })}
-                                                rows={4}
-                                                className="w-full p-2 border border-gray-300 rounded resize-none"
+                                                rows={4} className="w-full p-2 rounded resize-none text-sm"
+                                                style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium mb-2">Achievements (one per line)</label>
-                                            <textarea
-                                                value={editInternship.achievements.join('\n')}
+                                            <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Achievements (one per line)</label>
+                                            <textarea value={editInternship.achievements.join('\n')}
                                                 onChange={e => setEditInternship({ ...editInternship, achievements: e.target.value.split('\n') })}
-                                                rows={4}
-                                                className="w-full p-2 border border-gray-300 rounded resize-none"
+                                                rows={4} className="w-full p-2 rounded resize-none text-sm"
+                                                style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                                             />
                                         </div>
                                     </div>
                                     <div className="flex space-x-2">
-                                        <button
-                                            onClick={saveEditInternship}
-                                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Save
-                                        </button>
-                                        <button
-                                            onClick={cancelEditInternship}
-                                            className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Cancel
-                                        </button>
+                                        <button onClick={saveEditInternship} className="px-3 py-1 rounded text-sm"
+                                            style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>Save</button>
+                                        <button onClick={cancelEditInternship} className="px-3 py-1 rounded text-sm"
+                                            style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}>Cancel</button>
                                     </div>
                                 </div>
                             ) : (
                                 <>
-                                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
-                                        <h3 className="text-2xl font-bold mb-2">{internship.position}</h3>
-                                        <p className="text-blue-100 text-lg font-semibold">{internship.company}</p>
-                                        <div className="flex items-center gap-4 mt-2 text-blue-200">
+                                    <div className="p-6" style={{
+                                        background: 'linear-gradient(135deg, rgba(96,165,250,0.15), rgba(167,139,250,0.1))',
+                                        borderBottom: '1px solid rgba(96,165,250,0.2)',
+                                    }}>
+                                        <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>🛸 {internship.position}</h3>
+                                        <p className="font-semibold mb-2" style={{ color: 'var(--neon-blue)' }}>{internship.company}</p>
+                                        <div className="flex items-center gap-4" style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                                             {internship.duration && (
                                                 <div className="flex items-center gap-1">
-                                                    <Calendar size={16} />
+                                                    <Calendar size={14} />
                                                     <span>{internship.duration}</span>
                                                 </div>
                                             )}
                                             {internship.location && (
                                                 <div className="flex items-center gap-1">
-                                                    <MapPin size={16} />
+                                                    <MapPin size={14} />
                                                     <span>{internship.location}</span>
                                                 </div>
                                             )}
@@ -316,18 +282,19 @@ const Internships = () => {
                                     </div>
                                     <div className="p-6">
                                         {internship.description && (
-                                            <p className="text-gray-700 text-lg mb-6 leading-relaxed">{internship.description}</p>
+                                            <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{internship.description}</p>
                                         )}
                                         <div className="grid md:grid-cols-2 gap-6">
                                             {internship.skills && internship.skills.length > 0 && (
                                                 <div>
-                                                    <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                        <Award size={20} className="text-green-500" />
-                                                        Skills Developed
+                                                    <h4 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: 'var(--neon-green)' }}>
+                                                        <Award size={16} />
+                                                        Skills Acquired
                                                     </h4>
                                                     <div className="flex flex-wrap gap-2">
                                                         {internship.skills.map((skill, skillIndex) => (
-                                                            <span key={skillIndex} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                            <span key={skillIndex} className="px-2 py-0.5 rounded-full text-xs"
+                                                                style={{ background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.3)', color: 'var(--neon-green)' }}>
                                                                 {skill}
                                                             </span>
                                                         ))}
@@ -336,15 +303,15 @@ const Internships = () => {
                                             )}
                                             {internship.achievements && internship.achievements.length > 0 && (
                                                 <div>
-                                                    <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                        <FileText size={20} className="text-violet-500" />
-                                                        Key Achievements
+                                                    <h4 className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: 'var(--neon-purple)' }}>
+                                                        <FileText size={16} />
+                                                        Achievements
                                                     </h4>
-                                                    <ul className="space-y-2">
+                                                    <ul className="space-y-1">
                                                         {internship.achievements.map((achievement, achievementIndex) => (
-                                                            <li key={achievementIndex} className="flex items-start gap-2">
-                                                                <span className="text-green-500 text-lg mt-0.5">✓</span>
-                                                                <span className="text-gray-700 text-sm">{achievement}</span>
+                                                            <li key={achievementIndex} className="flex items-start gap-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                                                <span style={{ color: 'var(--neon-cyan)' }}>✦</span>
+                                                                <span>{achievement}</span>
                                                             </li>
                                                         ))}
                                                     </ul>
@@ -360,13 +327,12 @@ const Internships = () => {
 
                 {internshipsData.length === 0 && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">No internships added yet.</p>
+                        <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>🌌 No missions logged yet.</p>
                         {isAuthenticated && (
-                            <button
-                                onClick={() => setIsAddingInternship(true)}
-                                className="mt-4 bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-lg"
-                            >
-                                Add Your First Internship
+                            <button onClick={() => setIsAddingInternship(true)}
+                                className="mt-4 px-6 py-2 rounded-lg text-sm"
+                                style={{ background: 'rgba(96,165,250,0.15)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}>
+                                Log Your First Mission
                             </button>
                         )}
                     </div>

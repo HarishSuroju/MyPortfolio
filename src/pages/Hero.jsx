@@ -36,68 +36,101 @@ const Hero = () => {
         await updateHeroData('skills', updatedSkills);
     };
 
-    if (!heroData) return <div>Loading...</div>;
+    if (!heroData) return (
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--neon-cyan)' }}>
+            Loading mission data...
+        </div>
+    );
 
     return (
-        <section id="hero" className="relative bg-gray-200 py-24 md:py-32 flex items-center justify-center overflow-hidden">
+        <section id="hero" className="relative py-24 md:py-36 flex items-center justify-center overflow-hidden"
+            style={{ minHeight: '100vh', background: 'radial-gradient(ellipse at center, rgba(10,10,46,0.95) 0%, rgba(5,5,16,1) 100%)' }}
+        >
+            {/* Nebula background glow */}
+            <div style={{
+                position: 'absolute', inset: 0, pointerEvents: 'none',
+                background: 'radial-gradient(ellipse at 30% 60%, rgba(167,139,250,0.12) 0%, transparent 55%), radial-gradient(ellipse at 70% 30%, rgba(34,211,238,0.1) 0%, transparent 55%)',
+            }} />
+
             <EditableContent
                 value={heroData.backgroundImage}
                 onSave={(value) => updateHeroData('backgroundImage', value)}
                 type="image"
                 className="absolute inset-0 z-0"
             >
-                <img 
-                    src={heroData.backgroundImage || "/portfolio bg.jpg"} 
-                    alt="Portfolio background" 
-                    className="object-cover w-full h-full opacity-50 transition-all duration-500 hover:opacity-40" 
+                <img
+                    src={heroData.backgroundImage || "/portfolio bg.jpg"}
+                    alt="Portfolio background"
+                    className="object-cover w-full h-full"
+                    style={{ opacity: 0.08 }}
                 />
             </EditableContent>
-            
+
             <div className="relative z-10 text-center px-6 hero-content">
-                <div className="mb-6">
-                    <EditableContent
-                        value={heroData.profileImage}
-                        onSave={(value) => updateHeroData('profileImage', value)}
-                        type="image"
-                        className="inline-block"
-                    >
-                        <img 
-                            src={heroData.profileImage || "/me.jpg"} 
-                            alt="Profile" 
-                            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mx-auto transition-all duration-300 hover:scale-110 hover:shadow-xl" 
-                        />
-                    </EditableContent>
+                {/* Profile avatar with planet-pulse ring */}
+                <div className="mb-8 flex justify-center">
+                    <div className="relative inline-block">
+                        <div className="planet-pulse rounded-full p-1"
+                            style={{ background: 'linear-gradient(135deg, var(--neon-cyan), var(--neon-purple))' }}>
+                            <EditableContent
+                                value={heroData.profileImage}
+                                onSave={(value) => updateHeroData('profileImage', value)}
+                                type="image"
+                                className="inline-block"
+                            >
+                                <img
+                                    src={heroData.profileImage || "/me.jpg"}
+                                    alt="Profile"
+                                    className="w-36 h-36 rounded-full object-cover"
+                                    style={{ border: '3px solid var(--space-bg)' }}
+                                />
+                            </EditableContent>
+                        </div>
+                    </div>
                 </div>
-                
+
+                {/* Name */}
                 <EditableContent
                     value={heroData.name}
                     onSave={(value) => updateHeroData('name', value)}
                     placeholder="Your Name"
                 >
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-4">
+                    <h1 className="text-4xl md:text-6xl font-extrabold mb-4 glow-cyan cosmic-text">
                         Hi, I'm {heroData.name}
                     </h1>
                 </EditableContent>
-                
+
+                {/* Title */}
                 <EditableContent
                     value={heroData.title}
                     onSave={(value) => updateHeroData('title', value)}
                     placeholder="Your professional title or description"
                     multiline={true}
                 >
-                    <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
                         {heroData.title}
                     </p>
                 </EditableContent>
 
-                {/* Editable Skills Chips */}
-                <div className="mb-8">
+                {/* Skill Chips - Orbiting constellation style */}
+                <div className="mb-10">
                     <div className="flex flex-wrap gap-3 justify-center">
                         {(heroData.skills || []).map((skill, idx) => (
-                            <span key={idx} className="bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-md font-medium flex items-center">
-                                {skill}
+                            <span key={idx}
+                                className="flex items-center px-4 py-2 rounded-full text-sm font-medium"
+                                style={{
+                                    background: 'rgba(96,165,250,0.1)',
+                                    border: '1px solid rgba(96,165,250,0.35)',
+                                    color: 'var(--neon-blue)',
+                                    backdropFilter: 'blur(8px)',
+                                }}
+                            >
+                                ✦ {skill}
                                 {isAuthenticated && (
-                                    <button onClick={() => removeHeroSkill(idx)} className="ml-2 text-violet-500 hover:text-red-500 font-bold">&times;</button>
+                                    <button onClick={() => removeHeroSkill(idx)}
+                                        className="ml-2 font-bold"
+                                        style={{ color: 'var(--neon-pink)', opacity: 0.8 }}
+                                    >&times;</button>
                                 )}
                             </span>
                         ))}
@@ -108,24 +141,36 @@ const Hero = () => {
                                 type="text"
                                 value={newSkill}
                                 onChange={e => setNewSkill(e.target.value)}
-                                placeholder="Add a skill for hero section"
-                                className="p-2 border border-violet-300 rounded"
+                                placeholder="Add a skill..."
+                                className="p-2 rounded text-sm"
+                                style={{
+                                    background: 'rgba(96,165,250,0.08)',
+                                    border: '1px solid rgba(96,165,250,0.3)',
+                                    color: 'var(--text-primary)',
+                                }}
                             />
-                            <button
-                                onClick={addHeroSkill}
-                                className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded"
-                            >
-                                Add
-                            </button>
+                            <button onClick={addHeroSkill}
+                                className="px-4 py-2 rounded text-sm font-medium transition-all"
+                                style={{ background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}
+                            >Add</button>
                         </div>
                     )}
                 </div>
 
-                <div className="mt-8">
-                    <a href="#contact" className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105">
-                        Get In Touch
-                    </a>
-                </div>
+                {/* CTA Button */}
+                <a href="#contact"
+                    className="inline-block font-bold py-3 px-10 rounded-full transition-all duration-300"
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(96,165,250,0.2), rgba(167,139,250,0.2))',
+                        border: '1px solid rgba(96,165,250,0.5)',
+                        color: 'var(--neon-cyan)',
+                        boxShadow: '0 0 20px rgba(96,165,250,0.25)',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 35px rgba(96,165,250,0.5)'}
+                    onMouseLeave={e => e.currentTarget.style.boxShadow = '0 0 20px rgba(96,165,250,0.25)'}
+                >
+                    🛸 Initiate Contact
+                </a>
             </div>
         </section>
     );

@@ -54,7 +54,8 @@ const EditableContent = ({
                             type="file"
                             accept="image/*"
                             onChange={handleImageChange}
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 rounded"
+                            style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)' }}
                         />
                         {editValue && (
                             <img 
@@ -69,7 +70,8 @@ const EditableContent = ({
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
                         placeholder={placeholder}
-                        className="w-full p-2 border border-gray-300 rounded resize-none"
+                        className="w-full p-2 rounded resize-none"
+                        style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)', outline: 'none' }}
                         rows={4}
                         autoFocus
                         onKeyDown={(e) => {
@@ -84,8 +86,8 @@ const EditableContent = ({
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
                         placeholder={placeholder}
-                        className="w-full p-2 border border-gray-300 rounded"
-                        autoFocus
+                        className="w-full p-2 rounded"
+                        style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-primary)', outline: 'none' }}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 handleSave();
@@ -98,18 +100,16 @@ const EditableContent = ({
                 )}
                 
                 <div className="flex space-x-2 mt-2">
-                    <button
-                        onClick={handleSave}
-                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded"
-                        title="Save"
-                    >
+                    <button onClick={handleSave}
+                        className="p-2 rounded transition-all"
+                        style={{ background: 'rgba(52,211,153,0.2)', border: '1px solid var(--neon-green)', color: 'var(--neon-green)' }}
+                        title="Save">
                         <Save size={16} />
                     </button>
-                    <button
-                        onClick={handleCancel}
-                        className="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded"
-                        title="Cancel"
-                    >
+                    <button onClick={handleCancel}
+                        className="p-2 rounded transition-all"
+                        style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--text-secondary)' }}
+                        title="Cancel">
                         <X size={16} />
                     </button>
                 </div>
@@ -122,7 +122,8 @@ const EditableContent = ({
             {children}
             <button
                 onClick={() => setIsEditing(true)}
-                className="absolute top-1 right-1 bg-violet-500 hover:bg-violet-600 text-white p-1.5 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 p-1.5 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all"
+                style={{ background: 'rgba(167,139,250,0.25)', border: '1px solid var(--neon-purple)', color: 'var(--neon-purple)' }}
                 title="Edit"
             >
                 {type === 'image' ? <Upload size={16} /> : <Edit size={16} />}

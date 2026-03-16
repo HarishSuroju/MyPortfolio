@@ -110,241 +110,163 @@ const Certificates = () => {
     };
 
     return (
-        <section id="certificates" className="section py-20 px-6 bg-gray-100">
+        <section id="certificates" className="section py-20 px-6" style={{ background: 'var(--space-bg)' }}>
             <div className="container mx-auto">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
-                    <h2 className="text-3xl font-bold text-center flex-1 sm:text-left">Certificates</h2>
+                    <div>
+                        <h2 className="text-3xl font-bold cosmic-text">Space Badges</h2>
+                        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)', letterSpacing: '0.1em' }}>— CERTIFICATES —</p>
+                    </div>
                     <div className="flex space-x-2 self-center sm:self-auto">
                         {isAuthenticated && (
                             <>
-                                <button
-                                    onClick={resetToAllCertificates}
-                                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                                    title="Restore All Certificates"
-                                >
-                                    Reset All
-                                </button>
-                                <button
-                                    onClick={() => setIsAddingCertificate(true)}
-                                    className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full"
-                                    title="Add Certificate"
-                                >
-                                    <Plus size={20} />
-                                </button>
+                                <button onClick={resetToAllCertificates}
+                                    className="px-4 py-2 rounded text-sm transition-all"
+                                    style={{ background: 'rgba(96,165,250,0.1)', border: '1px solid rgba(96,165,250,0.3)', color: 'var(--neon-blue)' }}
+                                    title="Restore All Certificates">Reset All</button>
+                                <button onClick={() => setIsAddingCertificate(true)}
+                                    className="p-2 rounded-full transition-all"
+                                    style={{ background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.4)', color: 'var(--neon-purple)' }}
+                                    title="Add Certificate"><Plus size={20} /></button>
                             </>
                         )}
                     </div>
                 </div>
 
                 {isAddingCertificate && (
-                    <div className="mb-8 p-6 bg-white border-2 border-violet-200 rounded-lg shadow-lg">
-                        <h3 className="text-lg font-semibold mb-4">Add New Certificate</h3>
+                    <div className="mb-8 p-6 space-card rounded-lg shadow-lg">
+                        <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--neon-purple)' }}>🏅 Claim New Badge</h3>
                         <div className="space-y-4">
-                            <input
-                                type="text"
-                                placeholder="Certificate title"
-                                value={newCertificate.title}
+                            <input type="text" placeholder="Certificate title" value={newCertificate.title}
                                 onChange={(e) => setNewCertificate({ ...newCertificate, title: e.target.value })}
-                                className="w-full p-2 border border-gray-300 rounded"
+                                className="w-full p-2 rounded text-sm"
+                                style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                             />
-                            
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    placeholder="Issuing organization"
-                                    value={newCertificate.issuer}
+                                <input type="text" placeholder="Issuing organization" value={newCertificate.issuer}
                                     onChange={(e) => setNewCertificate({ ...newCertificate, issuer: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                 />
-                                <input
-                                    type="text"
-                                    placeholder="Date (e.g., 2023)"
-                                    value={newCertificate.date}
+                                <input type="text" placeholder="Date (e.g., 2023)" value={newCertificate.date}
                                     onChange={(e) => setNewCertificate({ ...newCertificate, date: e.target.value })}
-                                    className="p-2 border border-gray-300 rounded"
+                                    className="p-2 rounded text-sm"
+                                    style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                 />
                             </div>
-                            
-                            <textarea
-                                placeholder="Description"
-                                value={newCertificate.description}
+                            <textarea placeholder="Description" value={newCertificate.description}
                                 onChange={(e) => setNewCertificate({ ...newCertificate, description: e.target.value })}
-                                rows={3}
-                                className="w-full p-2 border border-gray-300 rounded resize-none"
+                                rows={3} className="w-full p-2 rounded resize-none text-sm"
+                                style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                             />
-                            
                             <div>
-                                <label className="block text-sm font-medium mb-2">Certificate Image</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
+                                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Certificate Image</label>
+                                <input type="file" accept="image/*"
                                     onChange={(e) => handleImageChange(e.target.files[0], (img) => setNewCertificate({ ...newCertificate, image: img }))}
-                                    className="w-full p-2 border border-gray-300 rounded"
+                                    className="w-full p-2 rounded text-sm"
+                                    style={{ background: 'rgba(167,139,250,0.05)', border: '1px solid rgba(167,139,250,0.2)', color: 'var(--text-secondary)' }}
                                 />
-                                {newCertificate.image && (
-                                    <img src={newCertificate.image} alt="Preview" className="mt-2 w-32 h-20 object-cover rounded" />
-                                )}
+                                {newCertificate.image && <img src={newCertificate.image} alt="Preview" className="mt-2 w-32 h-20 object-cover rounded" style={{ border: '1px solid rgba(167,139,250,0.3)' }} />}
                             </div>
-                            
-                            <input
-                                type="url"
-                                placeholder="Credential URL (optional)"
-                                value={newCertificate.credentialUrl}
+                            <input type="url" placeholder="Credential URL (optional)" value={newCertificate.credentialUrl}
                                 onChange={(e) => setNewCertificate({ ...newCertificate, credentialUrl: e.target.value })}
-                                className="w-full p-2 border border-gray-300 rounded"
+                                className="w-full p-2 rounded text-sm"
+                                style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                             />
                         </div>
-                        
                         <div className="flex space-x-2 mt-4">
-                            <button
-                                onClick={addCertificate}
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                            >
-                                Add Certificate
-                            </button>
-                            <button
-                                onClick={() => setIsAddingCertificate(false)}
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                            >
-                                Cancel
-                            </button>
+                            <button onClick={addCertificate} className="px-4 py-2 rounded text-sm"
+                                style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>Claim Badge</button>
+                            <button onClick={() => setIsAddingCertificate(false)} className="px-4 py-2 rounded text-sm"
+                                style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}>Cancel</button>
                         </div>
                     </div>
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                     {certificatesData.map((certificate, index) => (
-                        <div key={certificate.id || index} className="bg-white rounded-xl shadow-lg p-4 transform transition-transform hover:scale-105 relative group">
+                        <div key={certificate.id || index}
+                            className="space-card rounded-xl p-4 relative group transition-all duration-300"
+                            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 25px rgba(167,139,250,0.2)'}
+                            onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
+                        >
                             {isAuthenticated && editIndex !== index && (
                                 <div className="absolute top-2 right-2 flex space-x-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10">
-                                    <button
-                                        onClick={() => removeCertificate(index)}
-                                        className="bg-red-500 hover:bg-red-600 text-white p-1 rounded"
-                                        title="Remove certificate"
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                    <button
-                                        onClick={() => startEditCertificate(index)}
-                                        className="bg-blue-500 hover:bg-blue-600 text-white p-1 rounded"
-                                        title="Edit certificate"
-                                    >
-                                        <Edit size={14} />
-                                    </button>
+                                    <button onClick={() => removeCertificate(index)} className="p-1 rounded" title="Remove certificate"
+                                        style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.4)', color: '#f87171' }}><X size={14} /></button>
+                                    <button onClick={() => startEditCertificate(index)} className="p-1 rounded" title="Edit certificate"
+                                        style={{ background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}><Edit size={14} /></button>
                                 </div>
                             )}
                             {editIndex === index ? (
                                 <div>
-                                    <input
-                                        type="text"
-                                        placeholder="Certificate title"
-                                        value={editCertificate.title}
+                                    <input type="text" placeholder="Certificate title" value={editCertificate.title}
                                         onChange={e => setEditCertificate({ ...editCertificate, title: e.target.value })}
-                                        className="w-full p-2 border border-gray-300 rounded mb-2"
+                                        className="w-full p-2 rounded mb-2 text-sm"
+                                        style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                     />
-                                    <input
-                                        type="text"
-                                        placeholder="Issuing organization"
-                                        value={editCertificate.issuer}
+                                    <input type="text" placeholder="Issuing organization" value={editCertificate.issuer}
                                         onChange={e => setEditCertificate({ ...editCertificate, issuer: e.target.value })}
-                                        className="w-full p-2 border border-gray-300 rounded mb-2"
+                                        className="w-full p-2 rounded mb-2 text-sm"
+                                        style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                     />
-                                    <input
-                                        type="text"
-                                        placeholder="Date (e.g., 2023)"
-                                        value={editCertificate.date}
+                                    <input type="text" placeholder="Date (e.g., 2023)" value={editCertificate.date}
                                         onChange={e => setEditCertificate({ ...editCertificate, date: e.target.value })}
-                                        className="w-full p-2 border border-gray-300 rounded mb-2"
+                                        className="w-full p-2 rounded mb-2 text-sm"
+                                        style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                     />
-                                    <textarea
-                                        placeholder="Description"
-                                        value={editCertificate.description}
+                                    <textarea placeholder="Description" value={editCertificate.description}
                                         onChange={e => setEditCertificate({ ...editCertificate, description: e.target.value })}
-                                        rows={3}
-                                        className="w-full p-2 border border-gray-300 rounded mb-2 resize-none"
+                                        rows={3} className="w-full p-2 rounded mb-2 resize-none text-sm"
+                                        style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                     />
                                     <div className="mb-2">
-                                        <label className="block text-sm font-medium mb-2">Certificate Image</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={e => {
-                                                const file = e.target.files[0];
-                                                if (file) {
-                                                    const reader = new FileReader();
-                                                    reader.onload = (ev) => {
-                                                        setEditCertificate(cert => ({ ...cert, image: ev.target.result }));
-                                                    };
-                                                    reader.readAsDataURL(file);
-                                                }
-                                            }}
-                                            className="w-full p-2 border border-gray-300 rounded"
+                                        <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>Certificate Image</label>
+                                        <input type="file" accept="image/*"
+                                            onChange={e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => setEditCertificate(cert => ({ ...cert, image: ev.target.result })); r.readAsDataURL(f); } }}
+                                            className="w-full p-2 rounded text-sm"
+                                            style={{ background: 'rgba(167,139,250,0.05)', border: '1px solid rgba(167,139,250,0.2)', color: 'var(--text-secondary)' }}
                                         />
-                                        {editCertificate.image && (
-                                            <img src={editCertificate.image} alt="Preview" className="mt-2 w-32 h-20 object-cover rounded" />
-                                        )}
+                                        {editCertificate.image && <img src={editCertificate.image} alt="Preview" className="mt-2 w-32 h-20 object-cover rounded" />}
                                     </div>
-                                    <input
-                                        type="url"
-                                        placeholder="Credential URL (optional)"
-                                        value={editCertificate.credentialUrl}
+                                    <input type="url" placeholder="Credential URL (optional)" value={editCertificate.credentialUrl}
                                         onChange={e => setEditCertificate({ ...editCertificate, credentialUrl: e.target.value })}
-                                        className="w-full p-2 border border-gray-300 rounded mb-2"
+                                        className="w-full p-2 rounded mb-2 text-sm"
+                                        style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                     />
                                     <div className="flex space-x-2">
-                                        <button
-                                            onClick={saveEditCertificate}
-                                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Save
-                                        </button>
-                                        <button
-                                            onClick={cancelEditCertificate}
-                                            className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Cancel
-                                        </button>
+                                        <button onClick={saveEditCertificate} className="px-3 py-1 rounded text-xs"
+                                            style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>Save</button>
+                                        <button onClick={cancelEditCertificate} className="px-3 py-1 rounded text-xs"
+                                            style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}>Cancel</button>
                                     </div>
                                 </div>
                             ) : (
                                 <div>
                                     {certificate.image ? (
-                                        <img 
-                                            src={certificate.image} 
-                                            alt={certificate.title} 
-                                            className="w-full h-36 object-cover rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:opacity-90"
+                                        <img src={certificate.image} alt={certificate.title}
+                                            className="w-full h-36 object-cover rounded-lg cursor-pointer transition-all duration-300 hover:opacity-90"
+                                            style={{ border: '1px solid rgba(167,139,250,0.2)' }}
                                             onClick={() => setSelectedCertificate(certificate)}
                                         />
                                     ) : (
-                                        <div className="w-full h-36 bg-gray-200 rounded-lg flex items-center justify-center">
-                                            <Award size={36} className="text-gray-400" />
+                                        <div className="w-full h-36 rounded-lg flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.2)' }}>
+                                            <Award size={36} style={{ color: 'var(--neon-purple)', opacity: 0.5 }} />
                                         </div>
                                     )}
-                                    <h3 className="text-lg font-bold mb-1">{certificate.title}</h3>
-                                    <p className="text-gray-700 text-sm mb-1">Issued by {certificate.issuer}</p>
-                                    {certificate.date && (
-                                        <p className="text-gray-600 text-xs mb-2">{certificate.date}</p>
-                                    )}
-                                    {certificate.description && (
-                                        <p className="text-gray-600 text-xs mb-3 line-clamp-2">{certificate.description}</p>
-                                    )}
+                                    <h3 className="text-base font-bold mb-1 mt-3" style={{ color: 'var(--text-primary)' }}>🏅 {certificate.title}</h3>
+                                    <p className="text-xs mb-1" style={{ color: 'var(--neon-cyan)' }}>Issued by {certificate.issuer}</p>
+                                    {certificate.date && <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>{certificate.date}</p>}
+                                    {certificate.description && <p className="text-xs mb-3 line-clamp-2" style={{ color: 'var(--text-secondary)' }}>{certificate.description}</p>}
                                     <div className="flex space-x-2">
-                                        <button 
-                                            onClick={() => setSelectedCertificate(certificate)}
-                                            className="inline-flex items-center text-violet-600 hover:text-violet-700 text-sm font-semibold"
-                                        >
-                                            <Eye size={14} className="mr-1" />
-                                            View
+                                        <button onClick={() => setSelectedCertificate(certificate)}
+                                            className="inline-flex items-center text-sm font-semibold" style={{ color: 'var(--neon-purple)' }}>
+                                            <Eye size={14} className="mr-1" />View
                                         </button>
                                         {certificate.credentialUrl && (
-                                            <a
-                                                href={certificate.credentialUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center text-blue-600 hover:text-blue-700 text-sm font-semibold"
-                                            >
-                                                <Award size={14} className="mr-1" />
-                                                Verify
+                                            <a href={certificate.credentialUrl} target="_blank" rel="noopener noreferrer"
+                                                className="inline-flex items-center text-sm font-semibold" style={{ color: 'var(--neon-blue)' }}>
+                                                <Award size={14} className="mr-1" />Verify
                                             </a>
                                         )}
                                     </div>
@@ -356,13 +278,12 @@ const Certificates = () => {
 
                 {certificatesData.length === 0 && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">No certificates added yet.</p>
+                        <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>🌌 No badges earned yet.</p>
                         {isAuthenticated && (
-                            <button
-                                onClick={() => setIsAddingCertificate(true)}
-                                className="mt-4 bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-lg"
-                            >
-                                Add Your First Certificate
+                            <button onClick={() => setIsAddingCertificate(true)}
+                                className="mt-4 px-6 py-2 rounded-lg text-sm"
+                                style={{ background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.4)', color: 'var(--neon-purple)' }}>
+                                Claim Your First Badge
                             </button>
                         )}
                     </div>
@@ -370,37 +291,28 @@ const Certificates = () => {
 
                 {/* Modal for viewing certificate */}
                 {selectedCertificate && (
-                    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto relative">
-                            <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
+                    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(5,5,16,0.92)', backdropFilter: 'blur(8px)' }}>
+                        <div className="rounded-lg max-w-4xl max-h-[90vh] overflow-auto relative w-full"
+                            style={{ background: 'var(--space-deep)', border: '1px solid rgba(167,139,250,0.3)', boxShadow: '0 0 40px rgba(167,139,250,0.2)' }}>
+                            <div className="sticky top-0 p-4 flex justify-between items-center" style={{ background: 'rgba(10,10,46,0.95)', borderBottom: '1px solid rgba(167,139,250,0.2)' }}>
                                 <div>
-                                    <h3 className="text-xl font-bold">{selectedCertificate.title}</h3>
-                                    <p className="text-gray-600">Issued by {selectedCertificate.issuer}</p>
-                                    {selectedCertificate.date && (
-                                        <p className="text-gray-500 text-sm">{selectedCertificate.date}</p>
-                                    )}
+                                    <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{selectedCertificate.title}</h3>
+                                    <p style={{ color: 'var(--neon-cyan)', fontSize: '0.9rem' }}>Issued by {selectedCertificate.issuer}</p>
+                                    {selectedCertificate.date && <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>{selectedCertificate.date}</p>}
                                 </div>
-                                <button
-                                    onClick={() => setSelectedCertificate(null)}
-                                    className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-                                >
-                                    X
-                                </button>
+                                <button onClick={() => setSelectedCertificate(null)} className="text-2xl font-bold transition-all"
+                                    style={{ color: 'var(--text-secondary)' }}
+                                    onMouseEnter={e => e.target.style.color = 'var(--neon-pink)'}
+                                    onMouseLeave={e => e.target.style.color = 'var(--text-secondary)'}
+                                >✕</button>
                             </div>
                             <div className="p-4">
-                                {selectedCertificate.image ? (
-                                    <img 
-                                        src={selectedCertificate.image} 
-                                        alt={selectedCertificate.title}
-                                        className="w-full h-auto"
-                                    />
-                                ) : (
-                                    <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
-                                        <Award size={64} className="text-gray-400" />
-                                    </div>
-                                )}
+                                {selectedCertificate.image
+                                    ? <img src={selectedCertificate.image} alt={selectedCertificate.title} className="w-full h-auto rounded" />
+                                    : <div className="w-full h-64 flex items-center justify-center" style={{ background: 'rgba(167,139,250,0.05)' }}><Award size={64} style={{ color: 'var(--neon-purple)', opacity: 0.4 }} /></div>
+                                }
                                 {selectedCertificate.description && (
-                                    <p className="mt-4 text-gray-700">{selectedCertificate.description}</p>
+                                    <p className="mt-4" style={{ color: 'var(--text-secondary)' }}>{selectedCertificate.description}</p>
                                 )}
                             </div>
                         </div>

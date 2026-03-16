@@ -116,14 +116,17 @@ const Skills = () => {
     };
 
     return (
-        <section id="skills" className="section py-20 px-6 bg-gray-100">
+        <section id="skills" className="section py-20 px-6" style={{ background: 'var(--space-bg)' }}>
             <div className="container mx-auto">
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-12">
-                    <h2 className="text-3xl font-bold text-center flex-1 sm:text-left">My Skills</h2>
+                    <div>
+                        <h2 className="text-3xl font-bold cosmic-text">Skill Constellation</h2>
+                        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)', letterSpacing: '0.1em' }}>— MY SKILLS —</p>
+                    </div>
                     {isAuthenticated && (
-                        <button
-                            onClick={() => setIsAddingSkill(true)}
-                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-full self-center sm:self-auto"
+                        <button onClick={() => setIsAddingSkill(true)}
+                            className="p-2 rounded-full self-center sm:self-auto transition-all"
+                            style={{ background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.4)', color: 'var(--neon-purple)' }}
                             title="Add Skill"
                         >
                             <Plus size={20} />
@@ -132,74 +135,45 @@ const Skills = () => {
                 </div>
 
                 {isAddingSkill && (
-                    <div className="mb-8 p-6 bg-white rounded-lg shadow-lg">
-                        <h3 className="text-lg font-semibold mb-4">Add New Skill</h3>
+                    <div className="mb-8 p-6 space-card rounded-lg shadow-lg">
+                        <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--neon-purple)' }}>✦ Add New Star</h3>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <input
-                                type="text"
-                                placeholder="Skill name"
-                                value={newSkill.name}
+                            <input type="text" placeholder="Skill name" value={newSkill.name}
                                 onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
-                                className="p-2 border border-gray-300 rounded"
+                                className="p-2 rounded text-sm"
+                                style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                             />
-                            <select
-                                value={newSkill.category}
+                            <select value={newSkill.category}
                                 onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
-                                className="p-2 border border-gray-300 rounded"
+                                className="p-2 rounded text-sm"
+                                style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                             >
-                                <option value="Frontend">Frontend</option>
-                                <option value="Backend">Backend</option>
-                                <option value="Database">Database</option>
-                                <option value="Mobile">Mobile</option>
-                                <option value="DevOps">DevOps</option>
-                                <option value="DSA">DSA</option>
-                                <option value="Programming">Programming</option>
-                                <option value="Other">Other</option>
+                                {['Frontend','Backend','Database','Mobile','DevOps','DSA','Programming','Other'].map(c => (
+                                    <option key={c} value={c} style={{ background: 'var(--space-deep)' }}>{c}</option>
+                                ))}
                             </select>
                             <div className="flex items-center space-x-2">
-                                <span className="text-sm">Level:</span>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    value={newSkill.level}
+                                <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Level:</span>
+                                <input type="range" min="0" max="100" value={newSkill.level}
                                     onChange={(e) => setNewSkill({ ...newSkill, level: parseInt(e.target.value) })}
                                     className="flex-1"
                                 />
-                                <span className="text-sm w-8">{newSkill.level}%</span>
+                                <span className="text-sm w-8" style={{ color: 'var(--neon-purple)' }}>{newSkill.level}%</span>
                             </div>
                             <div>
-                                <label className="block text-sm mb-1">Skill Image</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={e => {
-                                        const file = e.target.files[0];
-                                        if (file) {
-                                            const reader = new FileReader();
-                                            reader.onload = (ev) => {
-                                                setNewSkill(skill => ({ ...skill, icon: ev.target.result }));
-                                            };
-                                            reader.readAsDataURL(file);
-                                        }
-                                    }}
-                                    className="p-2 border border-gray-300 rounded w-full"
+                                <label className="block text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Skill Image</label>
+                                <input type="file" accept="image/*"
+                                    onChange={e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => setNewSkill(s => ({ ...s, icon: ev.target.result })); r.readAsDataURL(f); } }}
+                                    className="p-2 rounded w-full text-sm"
+                                    style={{ background: 'rgba(167,139,250,0.05)', border: '1px solid rgba(167,139,250,0.2)', color: 'var(--text-secondary)' }}
                                 />
                             </div>
                         </div>
                         <div className="flex space-x-2 mt-4">
-                            <button
-                                onClick={addSkill}
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                            >
-                                Add
-                            </button>
-                            <button
-                                onClick={() => setIsAddingSkill(false)}
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                            >
-                                Cancel
-                            </button>
+                            <button onClick={addSkill} className="px-4 py-2 rounded text-sm"
+                                style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>Add</button>
+                            <button onClick={() => setIsAddingSkill(false)} className="px-4 py-2 rounded text-sm"
+                                style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}>Cancel</button>
                         </div>
                     </div>
                 )}
@@ -207,14 +181,12 @@ const Skills = () => {
                 {/* Category Filter */}
                 <div className="flex flex-wrap gap-2 mb-8 justify-center">
                     {getCategories().map((category) => (
-                        <button
-                            key={category}
-                            onClick={() => setActiveCategory(category)}
-                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                                activeCategory === category
-                                    ? `${getCategoryColor(category)} text-white`
-                                    : 'bg-white text-gray-700 hover:bg-gray-200'
-                            }`}
+                        <button key={category} onClick={() => setActiveCategory(category)}
+                            className="px-4 py-2 rounded-full text-sm font-medium transition-all duration-300"
+                            style={activeCategory === category
+                                ? { background: 'rgba(167,139,250,0.25)', border: '1px solid rgba(167,139,250,0.6)', color: 'var(--neon-purple)', boxShadow: '0 0 12px rgba(167,139,250,0.3)' }
+                                : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)' }
+                            }
                         >
                             {category}
                         </button>
@@ -223,124 +195,82 @@ const Skills = () => {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {getFilteredSkills().map((skill, index) => (
-                        <div
-                            key={index}
-                            className={`bg-white p-4 rounded-lg transform transition-all duration-300 hover:-translate-y-1 ${getCategoryGlowColor(skill.category)} hover:shadow-2xl relative group`}
+                        <div key={index}
+                            className="space-card p-4 rounded-lg relative group transition-all duration-300"
+                            onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 20px rgba(167,139,250,0.3)'}
+                            onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
                         >
                             {isAuthenticated && editIndex !== index && (
                                 <>
-                                    <button
-                                        onClick={() => removeSkill(index)}
-                                        className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                                        title="Remove skill"
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                    <button
-                                        onClick={() => startEditSkill(index)}
-                                        className="absolute top-1 right-8 bg-blue-500 hover:bg-blue-600 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                                        title="Edit skill"
-                                    >
-                                        ✎
-                                    </button>
+                                    <button onClick={() => removeSkill(index)}
+                                        className="absolute top-1 right-1 p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                                        style={{ background: 'rgba(239,68,68,0.2)', border: '1px solid rgba(239,68,68,0.4)', color: '#f87171' }}
+                                        title="Remove skill"><X size={14} /></button>
+                                    <button onClick={() => startEditSkill(index)}
+                                        className="absolute top-1 right-8 p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity text-xs"
+                                        style={{ background: 'rgba(96,165,250,0.2)', border: '1px solid rgba(96,165,250,0.4)', color: 'var(--neon-blue)' }}
+                                        title="Edit skill">✎</button>
                                 </>
                             )}
                             {editIndex === index ? (
                                 <div>
-                                    <input
-                                        type="text"
-                                        value={editSkill.name}
+                                    <input type="text" value={editSkill.name}
                                         onChange={e => setEditSkill({ ...editSkill, name: e.target.value })}
-                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                        className="p-2 rounded w-full mb-2 text-sm"
+                                        style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                         placeholder="Skill name"
                                     />
-                                    <select
-                                        value={editSkill.category}
+                                    <select value={editSkill.category}
                                         onChange={e => setEditSkill({ ...editSkill, category: e.target.value })}
-                                        className="p-2 border border-gray-300 rounded w-full mb-2"
+                                        className="p-2 rounded w-full mb-2 text-sm"
+                                        style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.3)', color: 'var(--text-primary)' }}
                                     >
-                                        <option value="Frontend">Frontend</option>
-                                        <option value="Backend">Backend</option>
-                                        <option value="Database">Database</option>
-                                        <option value="Mobile">Mobile</option>
-                                        <option value="DevOps">DevOps</option>
-                                        <option value="DSA">DSA</option>
-                                        <option value="Programming">Programming</option>
-                                        <option value="Other">Other</option>
+                                        {['Frontend','Backend','Database','Mobile','DevOps','DSA','Programming','Other'].map(c => (
+                                            <option key={c} value={c} style={{ background: 'var(--space-deep)' }}>{c}</option>
+                                        ))}
                                     </select>
                                     <div className="flex items-center space-x-2 mb-2">
-                                        <span className="text-sm">Level:</span>
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max="100"
-                                            value={editSkill.level}
+                                        <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>Level:</span>
+                                        <input type="range" min="0" max="100" value={editSkill.level}
                                             onChange={e => setEditSkill({ ...editSkill, level: parseInt(e.target.value) })}
                                             className="flex-1"
                                         />
-                                        <span className="text-sm w-8">{editSkill.level}%</span>
+                                        <span className="text-xs" style={{ color: 'var(--neon-purple)' }}>{editSkill.level}%</span>
                                     </div>
                                     <div className="mb-2">
-                                        <label className="block text-sm mb-1">Skill Image</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={e => {
-                                                const file = e.target.files[0];
-                                                if (file) {
-                                                    const reader = new FileReader();
-                                                    reader.onload = (ev) => {
-                                                        setEditSkill(skill => ({ ...skill, icon: ev.target.result }));
-                                                    };
-                                                    reader.readAsDataURL(file);
-                                                }
-                                            }}
-                                            className="p-2 border border-gray-300 rounded w-full"
+                                        <label className="block text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>Skill Image</label>
+                                        <input type="file" accept="image/*"
+                                            onChange={e => { const f = e.target.files[0]; if (f) { const r = new FileReader(); r.onload = ev => setEditSkill(s => ({ ...s, icon: ev.target.result })); r.readAsDataURL(f); } }}
+                                            className="p-1 rounded w-full text-xs"
+                                            style={{ background: 'rgba(167,139,250,0.05)', border: '1px solid rgba(167,139,250,0.2)', color: 'var(--text-secondary)' }}
                                         />
-                                        {editSkill.icon && (
-                                            <img src={editSkill.icon} alt="icon" className="w-7 h-7 object-contain mt-2" />
-                                        )}
+                                        {editSkill.icon && <img src={editSkill.icon} alt="icon" className="w-7 h-7 object-contain mt-2" />}
                                     </div>
                                     <div className="flex space-x-2">
-                                        <button
-                                            onClick={saveEditSkill}
-                                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Save
-                                        </button>
-                                        <button
-                                            onClick={cancelEditSkill}
-                                            className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded"
-                                        >
-                                            Cancel
-                                        </button>
+                                        <button onClick={saveEditSkill} className="px-3 py-1 rounded text-xs"
+                                            style={{ background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)', color: 'var(--neon-green)' }}>Save</button>
+                                        <button onClick={cancelEditSkill} className="px-3 py-1 rounded text-xs"
+                                            style={{ background: 'rgba(148,163,184,0.1)', border: '1px solid rgba(148,163,184,0.25)', color: 'var(--text-secondary)' }}>Cancel</button>
                                     </div>
                                 </div>
                             ) : (
                                 <>
-                                    <div className={`w-10 h-10 ${getCategoryColor(skill.category)} rounded-full flex items-center justify-center text-white font-bold mb-3 transform transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                                        {skill.icon ? (
-                                            <img src={skill.icon} alt={skill.name} className="w-7 h-7 object-contain" />
-                                        ) : (
-                                            skill.name.charAt(0).toUpperCase()
-                                        )}
+                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold mb-3 transition-all duration-300 group-hover:scale-110"
+                                        style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.3), rgba(96,165,250,0.3))', border: '1px solid rgba(167,139,250,0.4)', color: 'var(--neon-purple)' }}>
+                                        {skill.icon
+                                            ? <img src={skill.icon} alt={skill.name} className="w-7 h-7 object-contain" />
+                                            : skill.name.charAt(0).toUpperCase()
+                                        }
                                     </div>
-                                    <h3 className="text-md font-semibold mb-1 transform transition-transform duration-300 group-hover:translate-x-1">{skill.name}</h3>
-                                    <p className="text-xs text-gray-500 mb-2 transform transition-transform duration-300 group-hover:translate-x-1">{skill.category}</p>
-                                    <div className="w-full bg-gray-200 rounded-full h-1.5 mb-1 overflow-hidden">
-                                        <div
-                                            className={`${getCategoryColor(skill.category)} h-1.5 rounded-full transition-all duration-500 ease-out`}
-                                            style={{ width: `${skill.level}%` }}
-                                        ></div>
+                                    <h3 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>{skill.name}</h3>
+                                    <p className="text-xs mb-2" style={{ color: 'var(--text-secondary)' }}>{skill.category}</p>
+                                    <div className="w-full rounded-full h-1.5 mb-1 overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                                        <div className="skill-bar-fill h-1.5 rounded-full" style={{ width: `${skill.level}%` }} />
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-xs font-medium transform transition-transform duration-300 group-hover:scale-110">{skill.level}%</span>
+                                        <span className="text-xs font-medium" style={{ color: 'var(--neon-purple)' }}>{skill.level}%</span>
                                         {isAuthenticated && (
-                                            <input
-                                                type="range"
-                                                min="0"
-                                                max="100"
-                                                value={skill.level}
+                                            <input type="range" min="0" max="100" value={skill.level}
                                                 onChange={(e) => updateSkillLevel(index, parseInt(e.target.value))}
                                                 className="w-16"
                                             />
@@ -354,17 +284,14 @@ const Skills = () => {
 
                 {getFilteredSkills().length === 0 && (
                     <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">
-                            {skillsData.length === 0 
-                                ? "No skills added yet." 
-                                : `No skills found in the ${activeCategory} category.`}
+                        <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>
+                            {skillsData.length === 0 ? '🌌 No stars mapped yet.' : `No skills in ${activeCategory} galaxy.`}
                         </p>
                         {isAuthenticated && (
-                            <button
-                                onClick={() => setIsAddingSkill(true)}
-                                className="mt-4 bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-lg"
-                            >
-                                Add Your First Skill
+                            <button onClick={() => setIsAddingSkill(true)}
+                                className="mt-4 px-6 py-2 rounded-lg text-sm"
+                                style={{ background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.4)', color: 'var(--neon-purple)' }}>
+                                Map Your First Star
                             </button>
                         )}
                     </div>
