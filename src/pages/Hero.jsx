@@ -77,7 +77,7 @@ const Hero = () => {
                 
                 <div className="mt-8">
                     <a href="#contact" className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105">
-                        Get In Touch
+                        {heroData.ctaLabel || 'Get In Touch'}
                     </a>
                 </div>
             </div>
