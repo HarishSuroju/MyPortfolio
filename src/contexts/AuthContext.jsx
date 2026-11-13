@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null);
+    const [isRecovery, setIsRecovery] = useState(false);
 
     useEffect(() => {
         if (!supabase) {
@@ -31,7 +33,9 @@ export const AuthProvider = ({ children }) => {
         });
 
         // Listen for auth state changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            // Supabase fires this when the user lands from a password-reset email link.
+            if (event === 'PASSWORD_RECOVERY') setIsRecovery(true);
             setUser(session?.user ?? null);
             setIsAuthenticated(!!session?.user);
         });
@@ -66,7 +70,9 @@ export const AuthProvider = ({ children }) => {
             return false;
         }
 
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin,
+        });
         if (error) {
             toast.error(error.message);
             return false;
@@ -75,7 +81,21 @@ export const AuthProvider = ({ children }) => {
         return true;
     };
 
+    const updatePassword = async (newPassword) => {
+        if (!supabase) return false;
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) {
+            toast.error(error.message);
+            return false;
+        }
+        setIsRecovery(false);
+        toast.success('Password updated. You are now logged in.');
+        return true;
+    };
+
     const value = {
+        isRecovery,
+        updatePassword,
         isAuthenticated,
         isLoading,
         user,

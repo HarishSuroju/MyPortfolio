@@ -22,21 +22,28 @@ CREATE POLICY "Allow public read"
     FOR SELECT
     USING (true);
 
--- 4. Authenticated write access — only logged-in admin can modify
-CREATE POLICY "Allow authenticated insert"
+-- 4. Admin-only write access.
+--    IMPORTANT: replace the UUID below with YOUR user id
+--    (Dashboard -> Authentication -> Users -> copy the "User UID").
+--    Restricting to auth.role() = 'authenticated' is NOT enough: if sign-ups
+--    are enabled, anyone can register and would be allowed to edit your site.
+--    The placeholder is deliberately not a valid UUID, so this script fails
+--    loudly until you replace it.
+CREATE POLICY "Admin insert"
     ON portfolio_sections
     FOR INSERT
-    WITH CHECK (auth.role() = 'authenticated');
+    WITH CHECK ((SELECT auth.uid()) = 'REPLACE-WITH-YOUR-ADMIN-USER-UUID'::uuid);
 
-CREATE POLICY "Allow authenticated update"
+CREATE POLICY "Admin update"
     ON portfolio_sections
     FOR UPDATE
-    USING (auth.role() = 'authenticated');
+    USING ((SELECT auth.uid()) = 'REPLACE-WITH-YOUR-ADMIN-USER-UUID'::uuid)
+    WITH CHECK ((SELECT auth.uid()) = 'REPLACE-WITH-YOUR-ADMIN-USER-UUID'::uuid);
 
-CREATE POLICY "Allow authenticated delete"
+CREATE POLICY "Admin delete"
     ON portfolio_sections
     FOR DELETE
-    USING (auth.role() = 'authenticated');
+    USING ((SELECT auth.uid()) = 'REPLACE-WITH-YOUR-ADMIN-USER-UUID'::uuid);
 
 -- 5. Auto-update the updated_at timestamp on row changes
 CREATE OR REPLACE FUNCTION update_updated_at()
@@ -64,6 +71,8 @@ CREATE TRIGGER set_updated_at
 --      VITE_SUPABASE_URL=https://your-project.supabase.co
 --      VITE_SUPABASE_ANON_KEY=your-anon-key
 -- 5. Deploy or restart your dev server
+--    (Also: Authentication -> Providers -> Email -> turn OFF "Allow new users
+--     to sign up", since this site only ever needs your single admin account.)
 -- 6. Log in with the admin credentials you created
 -- 7. Use the CMS Dashboard → Settings → "Initialize Database"
 --    to push default data to the database

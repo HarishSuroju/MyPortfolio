@@ -28,13 +28,16 @@ const Certificates = () => {
 
     const updateCertificatesData = async (updatedCertificates) => {
         setCertificatesData(updatedCertificates);
-        await updatePortfolioSection('certificates', updatedCertificates);
+        const saved = await updatePortfolioSection('certificates', updatedCertificates);
+        if (!saved) toast.error('Could not save to the database. Your change is stored in this browser only.');
     };
 
     const resetToAllCertificates = async () => {
-        const updatedData = await resetCertificates();
-        setCertificatesData(updatedData.certificates);
-        toast.success('All certificates restored!');
+        if (!window.confirm('Restore the default certificates? Your current list will be replaced.')) return;
+        const { data, saved } = await resetCertificates();
+        setCertificatesData(data.certificates);
+        if (saved) toast.success('All certificates restored!');
+        else toast.error('Could not save to the database. Your change is stored in this browser only.');
     };
 
     const addCertificate = () => {
@@ -64,13 +67,6 @@ const Certificates = () => {
         const updatedCertificates = certificatesData.filter((_, i) => i !== index);
         updateCertificatesData(updatedCertificates);
         toast.success('Certificate removed successfully!');
-    };
-
-    const updateCertificate = (index, updatedCertificate) => {
-        const updatedCertificates = [...certificatesData];
-        updatedCertificates[index] = updatedCertificate;
-        updateCertificatesData(updatedCertificates);
-        toast.success('Certificate updated successfully!');
     };
 
     const handleImageChange = async (file, setImageFunction) => {
@@ -266,7 +262,7 @@ const Certificates = () => {
 
                 {/* Modal for viewing certificate */}
                 {selectedCertificate && (
-                    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4">
                         <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-auto relative">
                             <div className="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
                                 <div>

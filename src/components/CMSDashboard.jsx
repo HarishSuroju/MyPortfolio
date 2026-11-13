@@ -44,23 +44,34 @@ const CMSDashboard = ({ isOpen, onClose }) => {
         reader.onload = async (e) => {
             try {
                 const importedData = JSON.parse(e.target.result);
-                await savePortfolioData(importedData);
+                const saved = await savePortfolioData(importedData);
+                if (!saved) {
+                    toast.error('Import failed: the database rejected the data. Nothing was changed online.');
+                    return;
+                }
                 setPortfolioData(importedData);
                 toast.success('Portfolio data imported successfully!');
-                window.location.reload();
-            } catch {
-                toast.error('Invalid JSON file. Please check the format.');
+                setTimeout(() => window.location.reload(), 600);
+            } catch (error) {
+                toast.error(error instanceof SyntaxError
+                    ? 'Invalid JSON file. Please check the format.'
+                    : error.message);
             }
         };
         reader.readAsText(file);
+        event.target.value = '';
     };
 
     const handleResetData = async () => {
         if (window.confirm('Are you sure? This will reset all your portfolio data to defaults.')) {
-            const defaultData = await resetPortfolioData();
+            const { data: defaultData, saved } = await resetPortfolioData();
+            if (!saved) {
+                toast.error('Reset failed in the database. Nothing was changed online.');
+                return;
+            }
             setPortfolioData(defaultData);
             toast.success('Portfolio data reset to defaults!');
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 600);
         }
     };
 
@@ -91,7 +102,7 @@ const CMSDashboard = ({ isOpen, onClose }) => {
     ];
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start sm:items-center justify-center z-50 p-0 sm:p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-start sm:items-center justify-center z-50 p-0 sm:p-4">
             <div className="bg-white w-full h-full sm:h-auto sm:rounded-lg sm:max-w-4xl sm:max-h-[90vh] overflow-hidden flex flex-col">
                 <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white p-4 sm:p-6">
                     <div className="flex items-start justify-between gap-4">
@@ -104,7 +115,7 @@ const CMSDashboard = ({ isOpen, onClose }) => {
                             className="text-white hover:text-gray-200 text-xl sm:text-2xl font-bold leading-none"
                             aria-label="Close dashboard"
                         >
-                            X
+                            ✕
                         </button>
                     </div>
                 </div>
@@ -209,12 +220,18 @@ const CMSDashboard = ({ isOpen, onClose }) => {
                                 onClick={async () => {
                                     try {
                                         const parsedData = JSON.parse(exportData);
-                                        await savePortfolioData(parsedData);
+                                        const saved = await savePortfolioData(parsedData);
+                                        if (!saved) {
+                                            toast.error('Save failed: the database rejected the data.');
+                                            return;
+                                        }
                                         setPortfolioData(parsedData);
                                         toast.success('Data updated successfully!');
-                                        window.location.reload();
-                                    } catch {
-                                        toast.error('Invalid JSON format!');
+                                        setTimeout(() => window.location.reload(), 600);
+                                    } catch (error) {
+                                        toast.error(error instanceof SyntaxError
+                                            ? 'Invalid JSON format!'
+                                            : error.message);
                                     }
                                 }}
                                 className="flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
@@ -293,6 +310,7 @@ const CMSDashboard = ({ isOpen, onClose }) => {
                                     {supabase && (
                                         <button
                                             onClick={async () => {
+                                                if (!window.confirm('This overwrites ALL online content with the built-in defaults. Continue?')) return;
                                                 try {
                                                     await initializeDatabase();
                                                     toast.success('Database initialized with default data!');
@@ -318,14 +336,13 @@ const CMSDashboard = ({ isOpen, onClose }) => {
                                 <div className="border border-gray-200 p-4 rounded-lg">
                                     <h4 className="font-semibold text-gray-900 mb-2">CMS Features</h4>
                                     <ul className="text-gray-600 text-sm space-y-1">
-                                        <li>OK Real-time content editing</li>
-                                        <li>OK Image upload and management</li>
-                                        <li>OK Data import/export</li>
-                                        <li>OK Responsive design</li>
-                                        <li>OK Auto-save functionality</li>
-                                        <li>OK Guest-friendly display</li>
-                                        <li>OK Supabase database persistence</li>
-                                        <li>OK Supabase authentication</li>
+                                        <li>✓ Real-time content editing</li>
+                                        <li>✓ Image upload and management</li>
+                                        <li>✓ Data import/export</li>
+                                        <li>✓ Responsive design</li>
+                                                                                <li>✓ Guest-friendly display</li>
+                                        <li>✓ Supabase database persistence</li>
+                                        <li>✓ Supabase authentication</li>
                                     </ul>
                                 </div>
                             </div>

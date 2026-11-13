@@ -21,20 +21,20 @@ const defaultPortfolioData = {
         { name: "JavaScript", level: 65, category: "Frontend" },
         { name: "React", level: 60, category: "Frontend" },
         { name: "Node.js", level: 50, category: "Backend" },
-        { name: "Java", level: 60, category: "Backend" },
         { name: "SQL", level: 70, category: "Database" }
     ],
     projects: [
         {
             id: 1,
-            title: "Scientific Live Calculater",
-            description: "A simple calculator application implemented in Java for performing basic arithmetic operations.",
+            title: "Scientific Live Calculator",
+            description: "A scientific calculator web app with live evaluation, built with HTML, CSS and JavaScript.",
             image: "/Calci.png",
             technologies: ["Html", "Css", "JavaScript"],
             githubUrl: "https://github.com/HarishSuroju/calci.git",
             liveUrl: "https://calci-two-psi.vercel.app/"
         }
     ],
+    internships: [],
     certificates: [
         {
             id: 1,
@@ -86,7 +86,7 @@ const defaultPortfolioData = {
         }
     ],
     contact: {
-        email: "harish@example.com",
+        email: "harishsurojuv@gmail.com",
         phone: "+1234567890",
         location: "City, Country",
         socialLinks: {
@@ -101,15 +101,41 @@ const defaultPortfolioData = {
 };
 
 // ---------------------------------------------------------------------------
-// Data management utilities — Supabase (primary) + localStorage (cache/fallback)
+// Data management utilities - Supabase (primary) + localStorage (cache/fallback)
 // ---------------------------------------------------------------------------
 
-/**
- * Fetch the full portfolio object.
- * Tries Supabase first, caches in localStorage, falls back to localStorage / defaults.
- */
-export const getPortfolioData = async () => {
-    // Try Supabase
+const CACHE_KEY = 'portfolioData';
+
+// localStorage can throw (quota exceeded, private mode, blocked storage).
+// Persistence to the cache must never break saving to the database.
+const readCache = () => {
+    try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+};
+
+const writeCache = (data) => {
+    try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        return true;
+    } catch (error) {
+        console.warn('Could not write portfolio cache (storage full or unavailable):', error);
+        return false;
+    }
+};
+
+const toRows = (data) =>
+    Object.keys(data).map((key) => ({ section_key: key, data: data[key] }));
+
+// One shared in-flight request: every section calls getPortfolioData() on mount,
+// so without this the full dataset is downloaded once per section.
+let inFlight = null;
+let memory = null;
+
+const fetchPortfolioData = async () => {
     if (supabase) {
         try {
             const { data, error } = await supabase
@@ -120,49 +146,63 @@ export const getPortfolioData = async () => {
 
             if (data && data.length > 0) {
                 const portfolioData = { ...defaultPortfolioData };
-                data.forEach(row => {
+                data.forEach((row) => {
                     portfolioData[row.section_key] = row.data;
                 });
-                // Cache for fast subsequent loads
-                localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+                writeCache(portfolioData);
                 return portfolioData;
             }
-            // Table exists but is empty — return defaults
-            return defaultPortfolioData;
+            // Table exists but is empty - show defaults
+            return { ...defaultPortfolioData };
         } catch (error) {
             console.error('Supabase fetch failed, using cache:', error);
         }
     }
 
-    // Fallback: localStorage cache → defaults
-    const cached = localStorage.getItem('portfolioData');
-    if (cached) {
-        try {
-            return JSON.parse(cached);
-        } catch {
-            // corrupt cache
-        }
-    }
-    return defaultPortfolioData;
+    const cached = readCache();
+    return cached ? { ...defaultPortfolioData, ...cached } : { ...defaultPortfolioData };
 };
 
 /**
- * Save the entire portfolio object (bulk write).
+ * Fetch the full portfolio object (deduplicated across callers).
+ * Tries Supabase first, caches in localStorage, falls back to cache / defaults.
+ */
+export const getPortfolioData = () => {
+    if (memory) return Promise.resolve(memory);
+    if (!inFlight) {
+        inFlight = fetchPortfolioData()
+            .then((data) => {
+                memory = data;
+                return data;
+            })
+            .finally(() => {
+                inFlight = null;
+            });
+    }
+    return inFlight;
+};
+
+const invalidate = (data) => {
+    memory = data ?? null;
+};
+
+/**
+ * Save the entire portfolio object (bulk write). Returns true only if the
+ * database write succeeded (or Supabase is not configured).
  */
 export const savePortfolioData = async (data) => {
-    // Update localStorage cache immediately
-    localStorage.setItem('portfolioData', JSON.stringify(data));
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('Portfolio data must be a JSON object keyed by section.');
+    }
+
+    invalidate({ ...defaultPortfolioData, ...data });
+    writeCache(memory);
 
     if (supabase) {
         try {
-            const rows = Object.keys(data).map(key => ({
-                section_key: key,
-                data: data[key],
-            }));
-
             const { error } = await supabase
                 .from('portfolio_sections')
-                .upsert(rows, { onConflict: 'section_key' });
+                .upsert(toRows(data), { onConflict: 'section_key' });
 
             if (error) throw error;
             return true;
@@ -175,14 +215,12 @@ export const savePortfolioData = async (data) => {
 };
 
 /**
- * Update a single section (partial write).
+ * Update a single section (partial write). Returns true on success.
  */
 export const updatePortfolioSection = async (section, sectionData) => {
-    // Update localStorage cache immediately for instant UI
-    const cached = localStorage.getItem('portfolioData');
-    const currentData = cached ? JSON.parse(cached) : { ...defaultPortfolioData };
-    currentData[section] = sectionData;
-    localStorage.setItem('portfolioData', JSON.stringify(currentData));
+    const current = memory || readCache() || { ...defaultPortfolioData };
+    invalidate({ ...current, [section]: sectionData });
+    writeCache(memory);
 
     if (supabase) {
         try {
@@ -204,28 +242,26 @@ export const updatePortfolioSection = async (section, sectionData) => {
 };
 
 /**
- * Reset all data to defaults (DB + cache).
+ * Reset all data to defaults (DB + cache). Returns { data, saved }.
  */
 export const resetPortfolioData = async () => {
-    localStorage.setItem('portfolioData', JSON.stringify(defaultPortfolioData));
+    const defaults = { ...defaultPortfolioData };
+    invalidate(defaults);
+    writeCache(defaults);
 
+    let saved = true;
     if (supabase) {
         try {
-            const rows = Object.keys(defaultPortfolioData).map(key => ({
-                section_key: key,
-                data: defaultPortfolioData[key],
-            }));
-
             const { error } = await supabase
                 .from('portfolio_sections')
-                .upsert(rows, { onConflict: 'section_key' });
-
+                .upsert(toRows(defaults), { onConflict: 'section_key' });
             if (error) throw error;
         } catch (error) {
             console.error('Supabase reset failed:', error);
+            saved = false;
         }
     }
-    return defaultPortfolioData;
+    return { data: defaults, saved };
 };
 
 /**
@@ -237,8 +273,8 @@ export const resetCertificates = async () => {
         ...currentData,
         certificates: defaultPortfolioData.certificates
     };
-    await savePortfolioData(updatedData);
-    return updatedData;
+    const saved = await updatePortfolioSection('certificates', defaultPortfolioData.certificates);
+    return { data: updatedData, saved };
 };
 
 /**
@@ -247,40 +283,64 @@ export const resetCertificates = async () => {
 export const initializeDatabase = async () => {
     if (!supabase) throw new Error('Supabase is not configured');
 
-    const rows = Object.keys(defaultPortfolioData).map(key => ({
-        section_key: key,
-        data: defaultPortfolioData[key],
-    }));
-
+    const defaults = { ...defaultPortfolioData };
     const { error } = await supabase
         .from('portfolio_sections')
-        .upsert(rows, { onConflict: 'section_key' });
+        .upsert(toRows(defaults), { onConflict: 'section_key' });
 
     if (error) throw error;
-    localStorage.setItem('portfolioData', JSON.stringify(defaultPortfolioData));
+    invalidate(defaults);
+    writeCache(defaults);
     return true;
 };
 
 // ---------------------------------------------------------------------------
-// Image handling utilities (unchanged — these are client-side only)
+// Image handling utilities (client-side only)
 // ---------------------------------------------------------------------------
 
-export const handleImageUpload = (file) => {
-    return new Promise((resolve, reject) => {
-        if (!file) {
-            reject(new Error('No file provided'));
-            return;
-        }
+const MAX_IMAGE_DIMENSION = 1600;
 
+const readAsDataURL = (file) =>
+    new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = (e) => {
-            resolve(e.target.result);
-        };
-        reader.onerror = () => {
-            reject(new Error('Failed to read file'));
-        };
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = () => reject(new Error('Failed to read file'));
         reader.readAsDataURL(file);
     });
+
+/**
+ * Reads an image and downsizes it (max 1600px, WebP/JPEG) so the stored data
+ * URL stays small enough for the database row and localStorage cache.
+ * GIFs are kept as-is to preserve animation.
+ */
+export const handleImageUpload = async (file) => {
+    if (!file) throw new Error('No file provided');
+
+    const original = await readAsDataURL(file);
+    if (file.type === 'image/gif') return original;
+
+    try {
+        const img = await new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => resolve(image);
+            image.onerror = () => reject(new Error('Failed to decode image'));
+            image.src = original;
+        });
+
+        const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const compressed = canvas.toDataURL('image/webp', 0.85);
+        // Use the smaller of the two (some browsers fall back to PNG for webp).
+        return compressed.startsWith('data:image/webp') && compressed.length < original.length
+            ? compressed
+            : original;
+    } catch {
+        return original;
+    }
 };
 
 export const validateImageFile = (file) => {

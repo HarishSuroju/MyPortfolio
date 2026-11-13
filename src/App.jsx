@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import Header from './pages/Header.jsx';
@@ -11,53 +11,12 @@ import Certificates from './pages/Certificates.jsx';
 import Contact from './pages/Contacts.jsx';
 import LeetCode from './pages/LeetCode.jsx';
 import Footer from './pages/Footer.jsx';
+import PasswordRecoveryModal from './components/PasswordRecoveryModal.jsx';
 
 function App() {
-    useEffect(() => {
-        // Intersection Observer for scroll animations
-        const sections = document.querySelectorAll('.section');
-        const observerOptions = {
-            root: null,
-            threshold: 0.2,
-        };
-
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        sections.forEach(section => {
-            observer.observe(section);
-        });
-
-        // Typing effect on the hero section
-        const heroText = "A passionate software developer with a love for building cool things.";
-        let i = 0;
-        const typingElement = document.getElementById("hero-typing-text");
-
-        if (typingElement) {
-            typingElement.innerHTML = '';
-            function typeWriter() {
-                if (i < heroText.length) {
-                    typingElement.innerHTML += heroText.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, 50);
-                } else {
-                    typingElement.classList.remove('typing-effect');
-                    typingElement.style.borderRight = 'none';
-                }
-            }
-            typeWriter();
-        }
-    }, []);
-
     return (
         <AuthProvider>
-            <div className="bg-gray-100 text-gray-900 font-inter scroll-smooth">
+            <div className="bg-gray-100 text-gray-900 font-inter">
                 <Toaster 
                     position="top-right"
                     toastOptions={{
@@ -68,6 +27,7 @@ function App() {
                         },
                     }}
                 />
+                <PasswordRecoveryModal />
                 <Header />
                 <main className="pt-20">
                     <Hero />
