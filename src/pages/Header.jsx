@@ -21,7 +21,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="fixed w-full z-50 bg-white bg-opacity-90 backdrop-blur-sm shadow-md">
+            <header className="fixed w-full z-50 bg-white/90 backdrop-blur-sm shadow-md">
                 <div className="container mx-auto px-4 py-3 sm:px-6">
                     <div className="flex items-center justify-between">
                         <a href="#" className="text-lg sm:text-2xl font-bold text-gray-900">

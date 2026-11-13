@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getPortfolioData, updatePortfolioSection } from '../utils/dataManager';
 import { useAuth } from '../contexts/AuthContext';
 import { Plus, X } from 'lucide-react';
@@ -10,6 +10,9 @@ const Skills = () => {
     const [newSkill, setNewSkill] = useState({ name: '', level: 50, category: 'Frontend' });
     const [activeCategory, setActiveCategory] = useState('All');
     const { isAuthenticated } = useAuth();
+    const saveTimer = useRef(null);
+
+    useEffect(() => () => clearTimeout(saveTimer.current), []);
 
     useEffect(() => {
         const loadData = async () => {
@@ -21,7 +24,8 @@ const Skills = () => {
 
     const updateSkillsData = async (updatedSkills) => {
         setSkillsData(updatedSkills);
-        await updatePortfolioSection('skills', updatedSkills);
+        const saved = await updatePortfolioSection('skills', updatedSkills);
+        if (!saved) toast.error('Could not save to the database. Your change is stored in this browser only.');
     };
 
     const addSkill = () => {
@@ -40,10 +44,15 @@ const Skills = () => {
         toast.success('Skill removed successfully!');
     };
 
+    // Update the UI instantly, but save once the slider stops moving
+    // (otherwise every pixel of drag fires a database write).
     const updateSkillLevel = (index, newLevel) => {
-        const updatedSkills = [...skillsData];
-        updatedSkills[index].level = newLevel;
-        updateSkillsData(updatedSkills);
+        const updatedSkills = skillsData.map((skill, i) =>
+            i === index ? { ...skill, level: newLevel } : skill
+        );
+        setSkillsData(updatedSkills);
+        clearTimeout(saveTimer.current);
+        saveTimer.current = setTimeout(() => updateSkillsData(updatedSkills), 600);
     };
 
     const getCategoryColor = (category) => {
@@ -79,12 +88,12 @@ const Skills = () => {
     };
 
     // Filter skills by category
-    const getFilteredSkills = () => {
-        if (activeCategory === 'All') {
-            return skillsData;
-        }
-        return skillsData.filter(skill => skill.category === activeCategory);
-    };
+    // Keep each skill's index in the full array so edits/deletes hit the right
+    // item even while a category filter is active.
+    const getFilteredSkills = () =>
+        skillsData
+            .map((skill, originalIndex) => ({ skill, originalIndex }))
+            .filter(({ skill }) => activeCategory === 'All' || skill.category === activeCategory);
 
     return (
         <section id="skills" className="section py-20 px-6 bg-gray-100">
@@ -174,14 +183,14 @@ const Skills = () => {
                 </div>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {getFilteredSkills().map((skill, index) => (
+                    {getFilteredSkills().map(({ skill, originalIndex }) => (
                         <div 
-                            key={index} 
+                            key={skill.id ?? `${skill.name}-${originalIndex}`} 
                             className={`bg-white p-4 rounded-lg transform transition-all duration-300 hover:-translate-y-1 ${getCategoryGlowColor(skill.category)} hover:shadow-2xl relative group`}
                         >
                             {isAuthenticated && (
                                 <button
-                                    onClick={() => removeSkill(index)}
+                                    onClick={() => removeSkill(originalIndex)}
                                     className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white p-1 rounded opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                                     title="Remove skill"
                                 >
@@ -211,7 +220,7 @@ const Skills = () => {
                                         min="0"
                                         max="100"
                                         value={skill.level}
-                                        onChange={(e) => updateSkillLevel(index, parseInt(e.target.value))}
+                                        onChange={(e) => updateSkillLevel(originalIndex, parseInt(e.target.value))}
                                         className="w-16"
                                     />
                                 )}

@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 const Projects = () => {
     const [projectsData, setProjectsData] = useState([]);
     const [isAddingProject, setIsAddingProject] = useState(false);
-    const [editingProject, setEditingProject] = useState(null);
     const [newProject, setNewProject] = useState({
         title: '',
         description: '',
@@ -29,7 +28,8 @@ const Projects = () => {
 
     const updateProjectsData = async (updatedProjects) => {
         setProjectsData(updatedProjects);
-        await updatePortfolioSection('projects', updatedProjects);
+        const saved = await updatePortfolioSection('projects', updatedProjects);
+        if (!saved) toast.error('Could not save to the database. Your change is stored in this browser only.');
     };
 
     const addProject = () => {
@@ -71,7 +71,6 @@ const Projects = () => {
             inProgress: Boolean(updatedProject.inProgress)
         };
         updateProjectsData(updatedProjects);
-        setEditingProject(null);
         toast.success('Project updated successfully!');
     };
 

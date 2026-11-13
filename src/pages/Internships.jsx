@@ -28,7 +28,8 @@ const Internships = () => {
 
     const updateInternshipsData = async (updatedInternships) => {
         setInternshipsData(updatedInternships);
-        await updatePortfolioSection('internships', updatedInternships);
+        const saved = await updatePortfolioSection('internships', updatedInternships);
+        if (!saved) toast.error('Could not save to the database. Your change is stored in this browser only.');
     };
 
     const addInternship = () => {

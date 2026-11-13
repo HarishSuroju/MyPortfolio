@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { getPortfolioData, updatePortfolioSection } from '../utils/dataManager';
 import EditableContent from '../components/EditableContent';
 
@@ -16,7 +17,8 @@ const Hero = () => {
     const updateHeroData = async (field, value) => {
         const updatedHero = { ...heroData, [field]: value };
         setHeroData(updatedHero);
-        await updatePortfolioSection('hero', updatedHero);
+        const saved = await updatePortfolioSection('hero', updatedHero);
+        if (!saved) toast.error('Could not save to the database. Your change is stored in this browser only.');
     };
 
     if (!heroData) return <div>Loading...</div>;

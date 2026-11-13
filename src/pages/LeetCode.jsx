@@ -56,7 +56,8 @@ const LeetCode = () => {
         if (!trimmed) return;
         setUsername(trimmed);
         setEditingUsername(false);
-        await updatePortfolioSection('leetcode', { username: trimmed });
+        const saved = await updatePortfolioSection('leetcode', { username: trimmed });
+        if (!saved) toast.error('Could not save to the database. Your change is stored in this browser only.');
         toast.success('LeetCode username saved!');
     };
 
@@ -133,6 +134,8 @@ const LeetCode = () => {
             </div>
         );
     };
+
+    const ranking = solved?.ranking || profile?.ranking;
 
     // ---- states ----
     if (!username && !isAuthenticated) return null;
@@ -212,7 +215,7 @@ const LeetCode = () => {
                             </div>
                             <div className="bg-white rounded-xl p-6 shadow text-center">
                                 <Trophy className="mx-auto mb-2 text-yellow-500" size={28} />
-                                <div className="text-2xl sm:text-3xl font-bold text-gray-900">{(solved?.ranking || profile?.ranking) ? (solved?.ranking || profile?.ranking).toLocaleString() : 'N/A'}</div>
+                                <div className="text-2xl sm:text-3xl font-bold text-gray-900">{ranking ? ranking.toLocaleString() : 'N/A'}</div>
                                 <div className="text-gray-500 text-sm">Global Ranking</div>
                             </div>
                             <div className="bg-white rounded-xl p-6 shadow text-center">
