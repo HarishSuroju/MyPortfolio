@@ -6,7 +6,21 @@ const defaultPortfolioData = {
         name: "Harish Suroju",
         title: "A passionate software developer with a love for building cool things.",
         profileImage: "/me.jpg",
-        backgroundImage: "/portfolio bg.jpg"
+        backgroundImage: "/portfolio bg.jpg",
+        ctaLabel: "Get In Touch"
+    },
+    site: {
+        brandName: "Harish Suroju",
+        navLinks: [
+            { id: "nav-about", label: "About", target: "#about", visible: true },
+            { id: "nav-skills", label: "Skills", target: "#skills", visible: true },
+            { id: "nav-projects", label: "Projects", target: "#projects", visible: true },
+            { id: "nav-internships", label: "Internships", target: "#internships", visible: true },
+            { id: "nav-certificates", label: "Certificates", target: "#certificates", visible: true },
+            { id: "nav-leetcode", label: "LeetCode", target: "#leetcode", visible: true },
+            { id: "nav-contact", label: "Contact", target: "#contact", visible: true }
+        ],
+        footerText: "Harish Suroju. All rights reserved."
     },
     about: {
         title: "About Me",
@@ -87,12 +101,12 @@ const defaultPortfolioData = {
     ],
     contact: {
         email: "harishsurojuv@gmail.com",
-        phone: "+1234567890",
-        location: "City, Country",
+        phone: "",
+        location: "",
         socialLinks: {
-            linkedin: "https://linkedin.com/in/username",
-            github: "https://github.com/username",
-            twitter: "https://twitter.com/username"
+            linkedin: "",
+            github: "https://github.com/HarishSuroju",
+            twitter: ""
         }
     },
     leetcode: {
@@ -217,10 +231,16 @@ export const savePortfolioData = async (data) => {
 /**
  * Update a single section (partial write). Returns true on success.
  */
-export const updatePortfolioSection = async (section, sectionData) => {
+export const updatePortfolioSection = async (section, sectionData, { rollbackOnFailure = false } = {}) => {
     const current = memory || readCache() || { ...defaultPortfolioData };
     invalidate({ ...current, [section]: sectionData });
     writeCache(memory);
+
+    const rollback = () => {
+        if (!rollbackOnFailure) return;
+        invalidate(current);
+        writeCache(current);
+    };
 
     if (supabase) {
         try {
@@ -235,6 +255,7 @@ export const updatePortfolioSection = async (section, sectionData) => {
             return true;
         } catch (error) {
             console.error('Supabase section update failed:', error);
+            rollback();
             return false;
         }
     }
@@ -344,11 +365,11 @@ export const handleImageUpload = async (file) => {
 };
 
 export const validateImageFile = (file) => {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     const maxSize = 5 * 1024 * 1024; // 5MB
 
     if (!allowedTypes.includes(file.type)) {
-        throw new Error('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
+        throw new Error('Invalid file type. Please upload a JPEG, PNG, WebP or GIF image.');
     }
 
     if (file.size > maxSize) {
